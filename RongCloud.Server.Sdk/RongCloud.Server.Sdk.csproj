@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>io.rong</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>HeMiao</Authors>
+    <Company>shanda.com</Company>
+    <Product>DecodeCamp</Product>
+    <PackageReleaseNotes>
+      rongcloud sdk for commit
+      https://github.com/rongcloud/server-sdk-dotnet/tree/187b0c945b2df5bdabd38d7437c3ecdc05f4bbe9
+    </PackageReleaseNotes>
+    <Version>5.2019.6.11</Version>
+    <AssemblyVersion>5.2019.6.11</AssemblyVersion>
+    <FileVersion>5.2019.6.11</FileVersion>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>融云的SDK打包成nuget</Description>
+    <RepositoryUrl>https://github.com/rongcloud/server-sdk-dotnet</RepositoryUrl>
+    <PackageIconUrl>https://docs.rongcloud.cn/assets/images/favicon.png</PackageIconUrl>
+    <PackageProjectUrl>https://www.rongcloud.cn/docs/server.html</PackageProjectUrl>
+    <RepositoryType>github</RepositoryType>
+    <Copyright>RongCloud</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="jsonsource/**/*.*">
+      <IncludeInPackage>true</IncludeInPackage>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>
