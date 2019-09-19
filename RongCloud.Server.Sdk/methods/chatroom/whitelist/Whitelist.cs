@@ -1,7 +1,6 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 
-namespace io.rong.methods.chatroom.whitelist
+namespace RongCloud.Server.methods.chatroom.whitelist
 {
     public class Whitelist
 

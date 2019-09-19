@@ -1,10 +1,11 @@
-﻿using io.rong.models;
-using io.rong.models.response;
-using io.rong.models.push;
-using System;
-using io.rong.methods.user.block;
+﻿using System;
+using System.Threading.Tasks;
+using RongCloud.Server.methods.user.block;
+using RongCloud.Server.models;
+using RongCloud.Server.models.response;
+using RongCloud.Server.models.user;
 
-namespace io.rong.example.user
+namespace RongCloud.Server.Sdk.Example.user
 {
     public class BlockExample
 
@@ -13,18 +14,19 @@ namespace io.rong.example.user
          * 此处替换成您的appKey
          * */
         private static readonly string appKey = "appKey";
+
         /**
          * 此处替换成您的appSecret
          * */
         private static readonly string appSecret = "appSecret";
+
         /**
          * 自定义api地址
          * */
         private static readonly string api = "http://api.cn.ronghub.com";
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-
             RongCloud rongCloud = RongCloud.GetInstance(appKey, appSecret);
             //自定义 api 地址方式
             // RongCloud rongCloud = RongCloud.getInstance(appKey, appSecret,api);
@@ -43,7 +45,7 @@ namespace io.rong.example.user
                 Minute = 1000
             };
 
-            Result addBlockResult = (ResponseResult)block.Add(user);
+            Result addBlockResult = (ResponseResult) await block.Add(user);
             Console.WriteLine("userAddBlock:  " + addBlockResult);
 
             /**
@@ -52,7 +54,7 @@ namespace io.rong.example.user
              * 解除用户封禁
              *
              */
-            ResponseResult unBlockResult = block.Remove(user.Id);
+            ResponseResult unBlockResult = await block.Remove(user.Id);
             Console.WriteLine("unBlock:  " + unBlockResult);
 
             /**
@@ -61,11 +63,10 @@ namespace io.rong.example.user
              * 获取被封禁用户
              *
              */
-            BlockUserResult blockResult = block.GetList();
+            BlockUserResult blockResult = await block.GetList();
             Console.Write("queryBlock:  " + blockResult);
 
             Console.ReadLine();
-
         }
     }
 }

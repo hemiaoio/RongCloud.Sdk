@@ -1,17 +1,18 @@
-﻿using io.rong.models.response;
-using System;
-using io.rong.messages;
-using io.rong.models.message;
-using io.rong.methods.messages._private;
-using io.rong.methods.messages.chatroom;
-using io.rong.methods.messages.discussion;
-using io.rong.methods.messages.history;
+﻿using System;
 using System.IO;
-using System.Reflection;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
-using io.rong.methods.messages.system;
+using RongCloud.Server.messages;
+using RongCloud.Server.methods.message._private;
+using RongCloud.Server.methods.message.chatroom;
+using RongCloud.Server.methods.message.discussion;
+using RongCloud.Server.methods.message.@group;
+using RongCloud.Server.methods.message.history;
+using RongCloud.Server.methods.message.system;
+using RongCloud.Server.models.message;
+using RongCloud.Server.models.response;
 
-namespace io.rong.example.messages
+namespace RongCloud.Server.Sdk.Example.messages
 {
     /**
      * 消息发送示例
@@ -31,13 +32,12 @@ namespace io.rong.example.messages
 
         private static readonly TxtMessage txtMessage = new TxtMessage(".NET hello", "helloExtra");
 
-        private static readonly VoiceMessage voiceMessage = new VoiceMessage(".NET hello", "helloExtra", 20L);
         /**
          * 自定义api地址
          * */
         //private static readonly String api = "http://api.cn.ronghub.com";
 
-        static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             RongCloud rongCloud = RongCloud.GetInstance(appKey, appSecret);
             //自定义 api 地址方式
@@ -46,7 +46,7 @@ namespace io.rong.example.messages
             Private Private = rongCloud.Message.msgPrivate;
             // TODO
             MsgSystem system = rongCloud.Message.system;
-            methods.messages.group.Group group = rongCloud.Message.group;
+            Group group = rongCloud.Message.group;
             Chatroom chatroom = rongCloud.Message.chatroom;
             Discussion discussion = rongCloud.Message.discussion;
             History history = rongCloud.Message.history;
@@ -71,7 +71,7 @@ namespace io.rong.example.messages
                 ContentAvailable = 0
             };
 
-            ResponseResult result = rongCloud.Message.system.Send(systemMessage);
+            ResponseResult result = await rongCloud.Message.system.Send(systemMessage);
             Console.WriteLine("send system message:  " + result);
 
             /**
@@ -85,7 +85,7 @@ namespace io.rong.example.messages
             {
                 file = File.OpenText(Path.Combine(AppContext.BaseDirectory, "jsonsource/message/TemplateMessage.json"));
                 TemplateMessage template = JsonConvert.DeserializeObject<TemplateMessage>(file.ReadToEnd());
-                ResponseResult messagePublishTemplateResult = system.SendTemplate(template);
+                ResponseResult messagePublishTemplateResult = await system.SendTemplate(template);
 
                 Console.WriteLine("send systemTemplate message:  " + messagePublishTemplateResult);
             }
@@ -113,7 +113,7 @@ namespace io.rong.example.messages
                 Os = "Android"
             };
 
-            ResponseResult broadcastResult = rongCloud.Message.system.Broadcast(message);
+            ResponseResult broadcastResult = await rongCloud.Message.system.Broadcast(message);
             Console.WriteLine("send broadcast:  " + broadcastResult);
 
 
@@ -137,7 +137,7 @@ namespace io.rong.example.messages
                 IsIncludeSender = 0
             };
 
-            ResponseResult privateResult = Private.Send(privateMessage);
+            ResponseResult privateResult = await Private.Send(privateMessage);
             Console.WriteLine("send private message:  " + privateResult);
 
             /**
@@ -150,7 +150,7 @@ namespace io.rong.example.messages
                 file = File.OpenText(Path.Combine(AppContext.BaseDirectory,
                     "jsonsource/message/TemplateMessage.json"));
                 TemplateMessage template = JsonConvert.DeserializeObject<TemplateMessage>(file.ReadToEnd());
-                ResponseResult messagePublishTemplateResult = Private.SendTemplate(template);
+                ResponseResult messagePublishTemplateResult = await Private.SendTemplate(template);
 
                 Console.WriteLine("send privateTemplate message:  " + messagePublishTemplateResult);
             }
@@ -176,7 +176,7 @@ namespace io.rong.example.messages
                 SentTime = "1519444243981"
             };
 
-            ResponseResult recallPrivateResult = (ResponseResult) Private.Recall(recallMessage);
+            ResponseResult recallPrivateResult = (ResponseResult) await Private.Recall(recallMessage);
             Console.WriteLine("recall private:  " + recallPrivateResult);
 
             /**
@@ -198,7 +198,7 @@ namespace io.rong.example.messages
                 ContentAvailable = 0
             };
 
-            ResponseResult groupResult = group.Send(groupMessage);
+            ResponseResult groupResult = await group.Send(groupMessage);
 
             Console.WriteLine("send Group message:  " + groupResult);
 
@@ -215,7 +215,7 @@ namespace io.rong.example.messages
                 SentTime = "1507778882124"
             };
 
-            ResponseResult recallMessageResult = (ResponseResult) group.Recall(recallMessage);
+            ResponseResult recallMessageResult = (ResponseResult) await group.Recall(recallMessage);
 
             Console.WriteLine("send recall group message:  " + recallMessageResult);
 
@@ -244,7 +244,7 @@ namespace io.rong.example.messages
                 IsIncludeSender = 0,
                 ContentAvailable = 0
             };
-            ResponseResult mentionResult = rongCloud.Message.group.SendMention(mentionMessage);
+            ResponseResult mentionResult = await rongCloud.Message.group.SendMention(mentionMessage);
 
             Console.WriteLine("group mention result:  " + mentionResult);
 
@@ -268,7 +268,7 @@ namespace io.rong.example.messages
                 ContentAvailable = 0
             };
 
-            ResponseResult discussionResult = discussion.Send(discussionMessage);
+            ResponseResult discussionResult = await discussion.Send(discussionMessage);
 
             Console.WriteLine("send discussion message:  " + discussionResult);
 
@@ -284,7 +284,7 @@ namespace io.rong.example.messages
                 UId = "5GSB-RPM1-KP8H-9JHF",
                 SentTime = "1519444243981"
             };
-            ResponseResult recallDiscussionResult = (ResponseResult) discussion.Recall(recallMessage);
+            ResponseResult recallDiscussionResult = (ResponseResult) await discussion.Recall(recallMessage);
 
             Console.WriteLine("recall discussion message:  " + recallDiscussionResult);
 
@@ -306,7 +306,7 @@ namespace io.rong.example.messages
                 ObjectName = ctm.GetType()
             };
 
-            ResponseResult chatroomResult = chatroom.Send(chatroomMessage);
+            ResponseResult chatroomResult = await chatroom.Send(chatroomMessage);
             Console.WriteLine("send chatroom message:  " + chatroomResult);
 
 
@@ -327,7 +327,7 @@ namespace io.rong.example.messages
             };
 
 
-            ResponseResult chatroomBroadcastresult = chatroom.Broadcast(chatroomMessage);
+            ResponseResult chatroomBroadcastresult = await chatroom.Broadcast(chatroomMessage);
             Console.WriteLine("send chatroom broadcast message:  " + chatroomBroadcastresult);
 
 
@@ -339,7 +339,7 @@ namespace io.rong.example.messages
              *
              * */
 
-            HistoryMessageResult historyMessageResult = history.Get("2019011711");
+            HistoryMessageResult historyMessageResult = await history.Get("2019011711");
             Console.WriteLine("get history  message:  " + historyMessageResult);
 
             /**
@@ -349,7 +349,7 @@ namespace io.rong.example.messages
              * 删除历史消息日志文件
              *
              * */
-            ResponseResult removeHistoryMessageResult = history.Remove("2018030210");
+            ResponseResult removeHistoryMessageResult = await history.Remove("2018030210");
             Console.WriteLine("remove history  message:  " + removeHistoryMessageResult);
             Console.ReadLine();
         }

@@ -1,72 +1,114 @@
 ﻿using System;
-using System.Text;
-using System.Net;
-using System.Security.Cryptography;
 using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Security;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Threading.Tasks;
 
-
-namespace io.rong.util
+namespace RongCloud.Server.util
 {
     public class RongHttpClient
     {
-        public static string ExecuteGet(string url)
+        public static async Task<string> ExecuteGet(string url)
         {
             if (string.IsNullOrEmpty(url))
             {
-                throw new ArgumentNullException("url");
+                throw new ArgumentNullException(nameof(url));
             }
 
-            HttpWebRequest myRequest = WebRequest.Create(url) as HttpWebRequest;
-            myRequest.Method = "GET";
-            myRequest.ReadWriteTimeout = 30 * 1000;
+            using (HttpClient client = new HttpClient())
+            {
+                client.Timeout = TimeSpan.FromSeconds(30);
+                using (var result = await client.GetAsync(url))
+                {
+                    if (result.IsSuccessStatusCode)
+                    {
+                        return await result.Content.ReadAsStringAsync();
+                    }
 
-            return ReturnResult(myRequest);
+                    throw new HttpRequestException("RongCloud Request Error: " +
+                                                   await result.Content.ReadAsStringAsync());
+                }
+            }
+            //HttpWebRequest myRequest = WebRequest.Create(url) as HttpWebRequest;
+            //myRequest.Method = "GET";
+            //myRequest.ReadWriteTimeout = 30 * 1000;
+
+            //return ReturnResult(myRequest);
         }
 
 
-        public static string ExecutePost(string appkey, string appSecret, string postStr, string methodUrl,
+        public static async Task<string> ExecutePost(string appkey, string appSecret, string postStr, string methodUrl,
             string contentType)
         {
+            if (string.IsNullOrWhiteSpace(methodUrl))
+            {
+                throw new ArgumentNullException(nameof(methodUrl));
+            }
+
             Random rd = new Random();
             int rd_i = rd.Next();
             string nonce = Convert.ToString(rd_i);
-
             string timestamp = Convert.ToString(ConvertDateTimeInt(DateTime.Now));
-
             string signature = GetHash(appSecret + nonce + timestamp);
 
-            HttpWebRequest myRequest = (HttpWebRequest) WebRequest.Create(methodUrl);
-
-            myRequest.Method = "POST";
-            if (contentType == null || contentType.Equals("") || contentType.Length < 10)
+            using (HttpClient client = new HttpClient())
             {
-                myRequest.ContentType = "application/x-www-form-urlencoded";
+                client.DefaultRequestHeaders.Add("App-Key", appkey);
+                client.DefaultRequestHeaders.Add("Nonce", nonce);
+                client.DefaultRequestHeaders.Add("Timestamp", timestamp);
+                client.DefaultRequestHeaders.Add("Signature", signature);
+                client.Timeout = TimeSpan.FromSeconds(30);
+                HttpContent content = new ByteArrayContent(Encoding.UTF8.GetBytes(postStr));
+                content.Headers.ContentType = MediaTypeHeaderValue.Parse(string.IsNullOrWhiteSpace(contentType)
+                    ? "application/x-www-form-urlencoded"
+                    : contentType);
+                using (var result = await client.PostAsync(methodUrl, content))
+                {
+                    if (result.IsSuccessStatusCode)
+                    {
+                        return await result.RequestMessage.Content.ReadAsStringAsync();
+                    }
+
+                    throw new HttpRequestException("RongCloud Request Error: " +
+                                                   await result.Content.ReadAsStringAsync());
+                }
             }
-            else
-            {
-                myRequest.ContentType = contentType;
-            }
 
-            myRequest.ProtocolVersion = HttpVersion.Version10;
+            //HttpWebRequest myRequest = (HttpWebRequest) WebRequest.Create(methodUrl);
 
-            myRequest.Headers.Add("App-Key", appkey);
-            myRequest.Headers.Add("Nonce", nonce);
-            myRequest.Headers.Add("Timestamp", timestamp);
-            myRequest.Headers.Add("Signature", signature);
-            myRequest.ReadWriteTimeout = 30 * 1000;
+            //myRequest.Method = "POST";
+            //if (contentType == null || contentType.Equals("") || contentType.Length < 10)
+            //{
+            //    myRequest.ContentType = "application/x-www-form-urlencoded";
+            //}
+            //else
+            //{
+            //    myRequest.ContentType = contentType;
+            //}
 
-            byte[] data = Encoding.UTF8.GetBytes(postStr);
-            myRequest.ContentLength = data.Length;
+            //myRequest.ProtocolVersion = HttpVersion.Version10;
 
-            Stream newStream = myRequest.GetRequestStream();
+            //myRequest.Headers.Add("App-Key", appkey);
+            //myRequest.Headers.Add("Nonce", nonce);
+            //myRequest.Headers.Add("Timestamp", timestamp);
+            //myRequest.Headers.Add("Signature", signature);
+            //myRequest.ReadWriteTimeout = 30 * 1000;
 
-            // Send the data.
-            newStream.Write(data, 0, data.Length);
-            newStream.Close();
+            //byte[] data = Encoding.UTF8.GetBytes(postStr);
+            //myRequest.ContentLength = data.Length;
 
-            return ReturnResult(myRequest);
+            //Stream newStream = myRequest.GetRequestStream();
+
+            //// Send the data.
+            //newStream.Write(data, 0, data.Length);
+            //newStream.Close();
+
+            //return ReturnResult(myRequest);
         }
 
         /// <summary>  

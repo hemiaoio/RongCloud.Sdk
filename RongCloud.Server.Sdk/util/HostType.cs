@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace io.rong.util
+﻿namespace RongCloud.Server.util
 {
     public class HostType
 

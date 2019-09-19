@@ -1,16 +1,17 @@
-﻿using io.rong.methods.user.blacklist;
-using io.rong.methods.user.block;
-using io.rong.methods.user.onlineStatus;
-using io.rong.models;
-using io.rong.models.response;
-using io.rong.models.push;
-using io.rong.methods.user.tag;
-using io.rong.util;
-using System;
+﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
+using RongCloud.Server.methods.user.blacklist;
+using RongCloud.Server.methods.user.block;
+using RongCloud.Server.methods.user.onlineStatus;
+using RongCloud.Server.methods.user.tag;
+using RongCloud.Server.models;
+using RongCloud.Server.models.response;
+using RongCloud.Server.models.user;
+using RongCloud.Server.util;
 
-namespace io.rong.methods.user
+namespace RongCloud.Server.methods.user
 {
     public class User
     {
@@ -47,6 +48,7 @@ namespace io.rong.methods.user
             onlineStatus = new OnlineStatus(appKey, appSecret);
             tag = new Tag(appKey, appSecret);
         }
+
         /**
          * 获取 Token 方法 
          * url  "/user/getToken"
@@ -56,7 +58,7 @@ namespace io.rong.methods.user
          *
          * @return TokenResult
          **/
-        public TokenResult Register(UserModel user)
+        public async Task<TokenResult> Register(UserModel user)
         {
             //需要校验的字段
             string message = CommonUtil.CheckFiled(user, PATH, CheckMethod.REGISTER);
@@ -70,15 +72,16 @@ namespace io.rong.methods.user
             sb.Append("&name=").Append(HttpUtility.UrlEncode(user.name, UTF8));
             sb.Append("&portraitUri=").Append(HttpUtility.UrlEncode(user.portrait, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
-                body = body.Substring(1, body.Length-1);
+                body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(appKey, appSecret, body,
-                    rongCloud.ApiHostType.Type + "/user/getToken.json", "application/x-www-form-urlencoded");
+            string result = await RongHttpClient.ExecutePost(appKey, appSecret, body,
+                rongCloud.ApiHostType.Type + "/user/getToken.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<TokenResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.REGISTER, result));
+            return RongJsonUtil.JsonStringToObj<TokenResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.REGISTER, result));
         }
 
         /**
@@ -90,7 +93,7 @@ namespace io.rong.methods.user
          *
          * @return ResponseResult
          **/
-        public Result Update(UserModel user)
+        public async Task<Result> Update(UserModel user)
         {
             //需要校验的字段
             string message = CommonUtil.CheckFiled(user, PATH, CheckMethod.UPDATE);
@@ -111,15 +114,18 @@ namespace io.rong.methods.user
             {
                 sb.Append("&portraitUri=").Append(HttpUtility.UrlEncode(user.portrait, UTF8));
             }
-            string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
-            {
-                body = body.Substring(1, body.Length-1);
-            }
-            string result = RongHttpClient.ExecutePost(appKey, appSecret, body,
-                    RongCloud.ApiHostType.Type + "/user/refresh.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.UPDATE, result));
+            string body = sb.ToString();
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                body = body.Substring(1, body.Length - 1);
+            }
+
+            string result = await RongHttpClient.ExecutePost(appKey, appSecret, body,
+                RongCloud.ApiHostType.Type + "/user/refresh.json", "application/x-www-form-urlencoded");
+
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.UPDATE, result));
         }
     }
 }

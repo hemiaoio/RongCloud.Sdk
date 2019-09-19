@@ -1,11 +1,12 @@
-using io.rong.models;
-using io.rong.models.response;
-using io.rong.util;
-using System;
+﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
+using RongCloud.Server.models;
+using RongCloud.Server.models.response;
+using RongCloud.Server.util;
 
-namespace io.rong.methods.sensitive
+namespace RongCloud.Server.methods.sensitive
 {
     /**
      *
@@ -24,7 +25,6 @@ namespace io.rong.methods.sensitive
         {
             AppKey = appKey;
             AppSecret = appSecret;
-
         }
 
         public string AppKey { get; set; }
@@ -41,7 +41,7 @@ namespace io.rong.methods.sensitive
          *
          * @return ResponseResult
          **/
-        public ResponseResult Add(string word)
+        public async Task<ResponseResult> Add(string word)
         {
             string message = CommonUtil.CheckParam("keyword", word, PATH, CheckMethod.ADD);
             if (null != message)
@@ -52,14 +52,16 @@ namespace io.rong.methods.sensitive
             StringBuilder sb = new StringBuilder();
             sb.Append("&word=").Append(HttpUtility.UrlEncode(word, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                             RongCloud.ApiHostType.Type + "/wordfilter/add.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.ADD, result));
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/wordfilter/add.json", "application/x-www-form-urlencoded");
+
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.ADD, result));
         }
 
         /**
@@ -68,18 +70,20 @@ namespace io.rong.methods.sensitive
          *
          * @return ListWordfilterResult
          **/
-        public ListWordfilterResult GetList()
+        public async Task<ListWordfilterResult> GetList()
         {
             StringBuilder sb = new StringBuilder();
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                              RongCloud.ApiHostType.Type + "/wordfilter/list.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ListWordfilterResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.GETLIST, result));
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/wordfilter/list.json", "application/x-www-form-urlencoded");
+
+            return RongJsonUtil.JsonStringToObj<ListWordfilterResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.GETLIST, result));
         }
 
         /**
@@ -89,7 +93,7 @@ namespace io.rong.methods.sensitive
          *
          * @return ResponseResult
          **/
-        public ResponseResult Remove(string word)
+        public async Task<ResponseResult> Remove(string word)
         {
             if (word == null)
             {
@@ -99,14 +103,16 @@ namespace io.rong.methods.sensitive
             StringBuilder sb = new StringBuilder();
             sb.Append("&word=").Append(HttpUtility.UrlEncode(word, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                               RongCloud.ApiHostType.Type + "/wordfilter/delete.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.REMOVE, result));
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/wordfilter/delete.json", "application/x-www-form-urlencoded");
+
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.REMOVE, result));
         }
     }
 }

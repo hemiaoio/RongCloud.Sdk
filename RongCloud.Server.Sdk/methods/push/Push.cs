@@ -1,10 +1,10 @@
-﻿using System;
-using io.rong.models;
-using io.rong.models.response;
-using io.rong.models.push;
-using io.rong.util;
+﻿using System.Threading.Tasks;
+using RongCloud.Server.models;
+using RongCloud.Server.models.push;
+using RongCloud.Server.models.response;
+using RongCloud.Server.util;
 
-namespace io.rong.methods.push
+namespace RongCloud.Server.methods.push
 {
     /**
      * 推送服务
@@ -14,7 +14,6 @@ namespace io.rong.methods.push
      */
     public class Push
     {
-
         private static string UTF8 = "UTF-8";
         private static string PATH = "push";
         private string appKey;
@@ -43,7 +42,7 @@ namespace io.rong.methods.push
          * @param push 推送数据
          * @return PushResult
          **/
-        public PushResult Send(PushModel push)
+        public async Task<PushResult> Send(PushModel push)
         {
             // 需要校验的字段
             string message = CommonUtil.CheckFiled(push, PATH, CheckMethod.PUSH);
@@ -54,11 +53,11 @@ namespace io.rong.methods.push
 
             string body = RongJsonUtil.ObjToJsonString(push);
 
-            string result = RongHttpClient.ExecutePost(appKey, appSecret, body,
-                    RongCloud.ApiHostType.Type + "/push.json", "application/json");
+            string result = await RongHttpClient.ExecutePost(appKey, appSecret, body,
+                RongCloud.ApiHostType.Type + "/push.json", "application/json");
 
-            return RongJsonUtil.JsonStringToObj<PushResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.BROADCAST, result));
-
+            return RongJsonUtil.JsonStringToObj<PushResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.BROADCAST,
+                result));
         }
     }
 }

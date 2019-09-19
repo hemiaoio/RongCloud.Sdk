@@ -1,12 +1,14 @@
-﻿using io.rong.util;
-using io.rong.models;
-using io.rong.models.response;
-using io.rong.methods.group.gap;
-using io.rong.models.group;
+﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
+using RongCloud.Server.methods.@group.gag;
+using RongCloud.Server.models;
+using RongCloud.Server.models.@group;
+using RongCloud.Server.models.response;
+using RongCloud.Server.util;
 
-namespace io.rong.methods.group
+namespace RongCloud.Server.methods.@group
 {
     /**
      * 群组服务
@@ -55,7 +57,7 @@ namespace io.rong.methods.group
          *
          * @return Result
          **/
-        public Result Create(GroupModel group)
+        public async Task<Result> Create(GroupModel group)
         {
             //需要校验的字段
             string message = CommonUtil.CheckFiled(group, PATH, CheckMethod.CREATE);
@@ -75,12 +77,12 @@ namespace io.rong.methods.group
             sb.Append("&groupId=").Append(HttpUtility.UrlEncode(@group.Id, UTF8));
             sb.Append("&groupName=").Append(HttpUtility.UrlEncode(@group.Name, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
                 rongCloud.ApiHostType.Type + "/group/create.json", "application/x-www-form-urlencoded");
 
             return RongJsonUtil.JsonStringToObj<ResponseResult>(
@@ -94,7 +96,7 @@ namespace io.rong.methods.group
          *
          * @return ResponseResult
          **/
-        public Result Sync(UserGroup user)
+        public async Task<Result> Sync(UserGroup user)
         {
             if (user == null)
             {
@@ -127,12 +129,12 @@ namespace io.rong.methods.group
             }
 
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
                 rongCloud.ApiHostType.Type + "/group/sync.json", "application/x-www-form-urlencoded");
 
             return RongJsonUtil.JsonStringToObj<ResponseResult>(
@@ -146,7 +148,7 @@ namespace io.rong.methods.group
          *
          * @return ResponseResult
          **/
-        public Result Update(GroupModel group)
+        public async Task<Result> Update(GroupModel group)
         {
             string message = CommonUtil.CheckFiled(group, PATH, CheckMethod.UPDATE);
             if (null != message)
@@ -158,12 +160,12 @@ namespace io.rong.methods.group
             sb.Append("&groupId=").Append(HttpUtility.UrlEncode(@group.Id, UTF8));
             sb.Append("&groupName=").Append(HttpUtility.UrlEncode(@group.Name, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
                 rongCloud.ApiHostType.Type + "/group/refresh.json", "application/x-www-form-urlencoded");
 
             return RongJsonUtil.JsonStringToObj<ResponseResult>(
@@ -177,7 +179,7 @@ namespace io.rong.methods.group
          *
          * @return Result
          **/
-        public Result Invite(GroupModel group)
+        public async Task<Result> Invite(GroupModel group)
         {
             string message = CommonUtil.CheckFiled(group, PATH, CheckMethod.INVITE);
             if (null != message)
@@ -196,12 +198,12 @@ namespace io.rong.methods.group
             sb.Append("&groupId=").Append(HttpUtility.UrlEncode(@group.Id, UTF8));
             sb.Append("&groupName=").Append(HttpUtility.UrlEncode(@group.Name, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
                 rongCloud.ApiHostType.Type + "/group/join.json", "application/x-www-form-urlencoded");
 
             return RongJsonUtil.JsonStringToObj<ResponseResult>(
@@ -215,7 +217,7 @@ namespace io.rong.methods.group
          *
          * @return Result
          **/
-        public Result Join(GroupModel group)
+        public async Task<Result> Join(GroupModel group)
         {
             string message = CommonUtil.CheckFiled(group, PATH, CheckMethod.JOIN);
             if (null != message)
@@ -234,12 +236,12 @@ namespace io.rong.methods.group
             sb.Append("&groupId=").Append(HttpUtility.UrlEncode(@group.Id, UTF8));
             sb.Append("&groupName=").Append(HttpUtility.UrlEncode(@group.Name, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
                 rongCloud.ApiHostType.Type + "/group/join.json", "application/x-www-form-urlencoded");
 
             return RongJsonUtil.JsonStringToObj<ResponseResult>(
@@ -253,7 +255,7 @@ namespace io.rong.methods.group
          *
          * @return GroupUserQueryResult
          **/
-        public GroupUserQueryResult Get(GroupModel group)
+        public async Task<GroupUserQueryResult> Get(GroupModel group)
         {
             string errMsg = CommonUtil.CheckFiled(group, PATH, CheckMethod.GET);
             if (null != errMsg)
@@ -264,12 +266,12 @@ namespace io.rong.methods.group
             StringBuilder sb = new StringBuilder();
             sb.Append("&groupId=").Append(HttpUtility.UrlEncode(@group.Id, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
                 rongCloud.ApiHostType.Type + "/group/user/query.json", "application/x-www-form-urlencoded");
 
             return RongJsonUtil.JsonStringToObj<GroupUserQueryResult>(
@@ -283,7 +285,7 @@ namespace io.rong.methods.group
          *
          * @return ResponseResult
          **/
-        public Result Quit(GroupModel group)
+        public async Task<Result> Quit(GroupModel group)
         {
             string message = CommonUtil.CheckFiled(group, PATH, CheckMethod.QUIT);
             if (null != message)
@@ -301,12 +303,12 @@ namespace io.rong.methods.group
 
             sb.Append("&groupId=").Append(HttpUtility.UrlEncode(@group.Id, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
                 rongCloud.ApiHostType.Type + "/group/quit.json", "application/x-www-form-urlencoded");
 
             return RongJsonUtil.JsonStringToObj<GroupUserQueryResult>(
@@ -320,7 +322,7 @@ namespace io.rong.methods.group
          *
          * @return ResponseResult
          **/
-        public Result Dismiss(GroupModel group)
+        public async Task<Result> Dismiss(GroupModel group)
         {
             string message = CommonUtil.CheckFiled(group, PATH, CheckMethod.DISMISS);
             if (null != message)
@@ -333,12 +335,12 @@ namespace io.rong.methods.group
             sb.Append("&userId=").Append(HttpUtility.UrlEncode(member.Id, UTF8));
             sb.Append("&groupId=").Append(HttpUtility.UrlEncode(@group.Id, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
                 rongCloud.ApiHostType.Type + "/group/dismiss.json", "application/x-www-form-urlencoded");
 
             return RongJsonUtil.JsonStringToObj<GroupUserQueryResult>(

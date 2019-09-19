@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
-using System;
 
-namespace io.rong.models.push
+namespace RongCloud.Server.models.push
 {
     /**
      * 发送消息内容（必传）

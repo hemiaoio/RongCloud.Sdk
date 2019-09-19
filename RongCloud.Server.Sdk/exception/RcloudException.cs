@@ -1,6 +1,6 @@
 using System;
 
-namespace io.rong.exception
+namespace RongCloud.Server.exception
 {
 
     public abstract class RcloudException : Exception

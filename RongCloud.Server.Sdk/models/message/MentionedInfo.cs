@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
-using System;
 
-namespace io.rong.models.message
+namespace RongCloud.Server.models.message
 {
     public class MentionedInfo
     {

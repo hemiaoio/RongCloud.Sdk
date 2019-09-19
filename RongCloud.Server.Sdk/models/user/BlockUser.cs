@@ -1,4 +1,4 @@
-﻿namespace io.rong.models.push
+﻿namespace RongCloud.Server.models.user
 {
     public class BlockUser
 

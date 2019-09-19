@@ -1,8 +1,9 @@
-using io.rong.models.response;
-using io.rong.methods.chatroom.demotion;
-using System;
+﻿using System;
+using System.Threading.Tasks;
+using RongCloud.Server.methods.chatroom.demotion;
+using RongCloud.Server.models.response;
 
-namespace io.rong.example.chatroom
+namespace RongCloud.Server.Sdk.Example.chatroom
 {
     public class DemotionExample
 
@@ -11,6 +12,7 @@ namespace io.rong.example.chatroom
          * 此处替换成您的appKey
          * */
         private static readonly string appKey = "kj7swf8okyqt2";
+
         /**
          * 此处替换成您的appSecret
          * */
@@ -22,7 +24,7 @@ namespace io.rong.example.chatroom
         private static readonly string api = "http://api.cn.ronghub.com";
 
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             RongCloud rongCloud = RongCloud.GetInstance(appKey, appSecret);
             //自定义 api地址方式
@@ -36,8 +38,8 @@ namespace io.rong.example.chatroom
              * 添加应用内聊天室降级消息
              *
              * */
-            string[] messageType = { "RC:VcMsg", "RC:ImgTextMsg", "RC:ImgMsg" };
-            ResponseResult addResult = demotion.Add(messageType);
+            string[] messageType = {"RC:VcMsg", "RC:ImgTextMsg", "RC:ImgMsg"};
+            ResponseResult addResult = await demotion.Add(messageType);
             Console.WriteLine("add demotion:  " + addResult);
 
             /**
@@ -46,7 +48,7 @@ namespace io.rong.example.chatroom
              * 移除应用内聊天室降级消息
              *
              * */
-            ResponseResult removeResult = demotion.Remove(messageType);
+            ResponseResult removeResult = await demotion.Remove(messageType);
             Console.WriteLine("remove demotion:  " + removeResult);
 
 
@@ -56,11 +58,10 @@ namespace io.rong.example.chatroom
              * 添加聊天室消息优先级demo
              *
              * */
-            ChatroomDemotionMsgResult demotionMsgResult = demotion.GetList();
+            ChatroomDemotionMsgResult demotionMsgResult = await demotion.GetList();
             Console.WriteLine("get demotion:  " + demotionMsgResult);
 
             Console.ReadLine();
-
         }
     }
 }

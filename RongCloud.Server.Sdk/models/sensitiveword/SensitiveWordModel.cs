@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
-using System;
 
-namespace io.rong.models.sensitiveword
+namespace RongCloud.Server.models.sensitiveword
 {
     /**
      * 敏感词、替换词信息

@@ -1,12 +1,13 @@
-using io.rong.util;
-using io.rong.models.sensitiveword;
-using io.rong.models;
-using io.rong.models.response;
-using System;
+﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
+using RongCloud.Server.models;
+using RongCloud.Server.models.response;
+using RongCloud.Server.models.sensitiveword;
+using RongCloud.Server.util;
 
-namespace io.rong.methods.sensitive
+namespace RongCloud.Server.methods.sensitive
 {
     /**
      *
@@ -35,11 +36,11 @@ namespace io.rong.methods.sensitive
         {
             RongCloud = rongCloud;
         }
+
         public SensitiveWord(string appKey, string appSecret)
         {
             AppKey = appKey;
             AppSecret = appSecret;
-
         }
 
 
@@ -49,9 +50,8 @@ namespace io.rong.methods.sensitive
          * @param  sensitiveword:敏感词
          * @return ResponseResult
          **/
-        public ResponseResult Add(SensitiveWordModel sensitiveword)
+        public async Task<ResponseResult> Add(SensitiveWordModel sensitiveword)
         {
-
             string errMsg = CommonUtil.CheckFiled(sensitiveword, PATH, CheckMethod.ADD);
             if (null != errMsg)
             {
@@ -67,18 +67,21 @@ namespace io.rong.methods.sensitive
                 {
                     return new ResponseResult(1002, "replace 参数为必传项");
                 }
+
                 sb.Append("&replaceWord=").Append(HttpUtility.UrlEncode(sensitiveword.Replace, UTF8));
             }
 
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                         RongCloud.ApiHostType.Type + "/sensitiveword/add.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.ADD, result));
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/sensitiveword/add.json", "application/x-www-form-urlencoded");
+
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.ADD, result));
         }
 
         /**
@@ -88,24 +91,20 @@ namespace io.rong.methods.sensitive
          *
          * @return ListWordfilterResult
          **/
-        public ListWordfilterResult GetList(int type)
+        public async Task<ListWordfilterResult> GetList(int type)
         {
             StringBuilder sb = new StringBuilder();
-
-            if (type != null)
-            {
-                sb.Append("&type=").Append(HttpUtility.UrlEncode(type.ToString(), UTF8));
-            }
+            sb.Append("&type=").Append(HttpUtility.UrlEncode(type.ToString(), UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                             RongCloud.ApiHostType.Type + "/sensitiveword/list.json", "application/x-www-form-urlencoded");
-
-            return RongJsonUtil.JsonStringToObj<ListWordfilterResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.GETLIST, result));
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/sensitiveword/list.json", "application/x-www-form-urlencoded");
+            return RongJsonUtil.JsonStringToObj<ListWordfilterResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.GETLIST, result));
         }
 
         /**
@@ -115,26 +114,29 @@ namespace io.rong.methods.sensitive
          *
          * @return ResponseResult
          **/
-        public ResponseResult Remove(string word)
+        public async Task<ResponseResult> Remove(string word)
         {
             string message = CommonUtil.CheckParam("keyword", word, PATH, CheckMethod.REMOVE);
             if (null != message)
             {
                 return RongJsonUtil.JsonStringToObj<ResponseResult>(message);
             }
+
             StringBuilder sb = new StringBuilder();
             sb.Append("&word=").Append(HttpUtility.UrlEncode(word, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                                RongCloud.ApiHostType.Type + "/sensitiveword/delete.json", "application/x-www-form-urlencoded");
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/sensitiveword/delete.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.REMOVE, result));
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.REMOVE, result));
         }
+
         /**
          * 批量移除敏感词方法（从敏感词列表中，移除某一敏感词。）
          *
@@ -142,30 +144,31 @@ namespace io.rong.methods.sensitive
          *
          * @return ResponseResult
          **/
-        public ResponseResult BatchDelete(string[] words)
+        public async Task<ResponseResult> BatchDelete(string[] words)
         {
             string message = CommonUtil.CheckParam("keyword", words, PATH, CheckMethod.BATCH_DELETE);
             if (null != message)
             {
                 return RongJsonUtil.JsonStringToObj<ResponseResult>(message);
             }
+
             StringBuilder sb = new StringBuilder();
             foreach (var word in words)
             {
                 sb.Append("&words=").Append(HttpUtility.UrlEncode(word, UTF8));
             }
+
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                                   RongCloud.ApiHostType.Type + "/sensitiveword/batch/delete.json", "application/x-www-form-urlencoded");
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/sensitiveword/batch/delete.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.BATCH_DELETE, result));
-
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.BATCH_DELETE, result));
         }
-
     }
 }

@@ -1,7 +1,6 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace io.rong.models.push
+namespace RongCloud.Server.models.push
 {
     public class PushModel : BroadcastPushPublicPart
     {

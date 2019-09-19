@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
-using System;
 
-namespace io.rong.models.conversation
+namespace RongCloud.Server.models.conversation
 {
     public class ConversationModel
 

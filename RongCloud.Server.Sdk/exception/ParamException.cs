@@ -1,6 +1,6 @@
 using System;
 
-namespace io.rong.exception
+namespace RongCloud.Server.exception
 {
 
     public class ParamException : RcloudException

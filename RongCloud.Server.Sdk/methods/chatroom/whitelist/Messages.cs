@@ -1,11 +1,12 @@
-using io.rong.models;
-using io.rong.models.response;
-using io.rong.util;
-using System;
+﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
+using RongCloud.Server.models;
+using RongCloud.Server.models.response;
+using RongCloud.Server.util;
 
-namespace io.rong.methods.chatroom.whitelist
+namespace RongCloud.Server.methods.chatroom.whitelist
 {
     public class Messages
 
@@ -24,6 +25,7 @@ namespace io.rong.methods.chatroom.whitelist
             AppKey = appKey;
             AppSecret = appSecret;
         }
+
         /**
          * 添加聊天室消息白名单成员方法
          *
@@ -31,7 +33,7 @@ namespace io.rong.methods.chatroom.whitelist
          *
          * @return ResponseResult
          **/
-        public ResponseResult Add(string[] objectNames)
+        public async Task<ResponseResult> Add(string[] objectNames)
         {
             if (objectNames == null)
             {
@@ -52,15 +54,16 @@ namespace io.rong.methods.chatroom.whitelist
             }
 
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                                                     RongCloud.ApiHostType.Type + "/chatroom/whitelist/add.json", "application/x-www-form-urlencoded");
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/chatroom/whitelist/add.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.ADD, result));
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.ADD, result));
         }
 
         /**
@@ -70,32 +73,37 @@ namespace io.rong.methods.chatroom.whitelist
          *
          * @return ResponseResult
          **/
-        public ResponseResult Remove(string[] objectNames)
+        public async Task<ResponseResult> Remove(string[] objectNames)
         {
             if (objectNames == null)
             {
                 return new ResponseResult(1002, "Paramer 'objectNames' is required");
             }
+
             string errMsg = CommonUtil.CheckParam("objectNames", objectNames, PATH, CheckMethod.REMOVE);
             if (null != errMsg)
             {
                 return RongJsonUtil.JsonStringToObj<ResponseResult>(errMsg);
             }
+
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < objectNames.Length; i++)
             {
                 string child = objectNames[i];
                 sb.Append("&objectnames=").Append(HttpUtility.UrlEncode(child, UTF8));
             }
+
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                                                         RongCloud.ApiHostType.Type + "/chatroom/whitelist/delete.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.REMOVE, result));
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/chatroom/whitelist/delete.json", "application/x-www-form-urlencoded");
+
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.REMOVE, result));
         }
 
         /**
@@ -104,14 +112,13 @@ namespace io.rong.methods.chatroom.whitelist
          *
          * @return ResponseResult
          **/
-        public ChatroomWhitelistMsgResult GetList()
+        public async Task<ChatroomWhitelistMsgResult> GetList()
         {
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, "",
-                          RongCloud.ApiHostType.Type + "/chatroom/whitelist/query.json", "application/x-www-form-urlencoded");
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, "",
+                RongCloud.ApiHostType.Type + "/chatroom/whitelist/query.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ChatroomWhitelistMsgResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.GETLIST, result));
-
+            return RongJsonUtil.JsonStringToObj<ChatroomWhitelistMsgResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.GETLIST, result));
         }
     }
 }
-

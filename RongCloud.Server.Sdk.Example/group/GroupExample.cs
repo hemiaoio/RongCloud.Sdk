@@ -1,10 +1,11 @@
-using io.rong.methods.group;
-using io.rong.models;
-using io.rong.models.group;
-using io.rong.models.response;
-using System;
+﻿using System;
+using System.Threading.Tasks;
+using RongCloud.Server.methods.@group;
+using RongCloud.Server.models;
+using RongCloud.Server.models.@group;
+using RongCloud.Server.models.response;
 
-namespace io.rong.example.group
+namespace RongCloud.Server.Sdk.Example.@group
 {
     /**
      *
@@ -18,10 +19,12 @@ namespace io.rong.example.group
          * 此处替换成您的appKey
          * */
         private static readonly string appKey = "appKey";
+
         /**
          * 此处替换成您的appSecret
          * */
         private static readonly string appSecret = "appSecret";
+
         /**
          * 自定义api地址
          * */
@@ -33,9 +36,8 @@ namespace io.rong.example.group
          * @param args
          * @throws Exception
          */
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-
             RongCloud rongCloud = RongCloud.GetInstance(appKey, appSecret);
             //自定义 api 地址方式
             // RongCloud rongCloud = RongCloud.getInstance(appKey, appSecret,api);
@@ -48,7 +50,8 @@ namespace io.rong.example.group
              * 创建群组方法
              *
              */
-            GroupMember[] members = { new GroupMember() { Id = "Vu-oC0_LQ6kgPqltm_zYtI" }, new GroupMember() { Id = "uPj70HUrRSUk-ixtt7iIGc" } };
+            GroupMember[] members =
+                {new GroupMember() {Id = "Vu-oC0_LQ6kgPqltm_zYtI"}, new GroupMember() {Id = "uPj70HUrRSUk-ixtt7iIGc"}};
 
 
             GroupModel group = new GroupModel()
@@ -58,7 +61,7 @@ namespace io.rong.example.group
                 Name = "groupName"
             };
 
-            Result groupCreateResult = Group.Create(@group);
+            Result groupCreateResult = await Group.Create(@group);
             Console.WriteLine("group create result:  " + groupCreateResult);
 
             /**
@@ -79,7 +82,7 @@ namespace io.rong.example.group
                 Name = "groupName2"
             };
 
-            GroupModel[] groups = { group1, group2 };
+            GroupModel[] groups = {group1, group2};
             UserGroup user = new UserGroup()
             {
                 Id = "Vu-oC0_LQ6kgPqltm_zYtI",
@@ -87,10 +90,10 @@ namespace io.rong.example.group
             };
 
 
-            Result syncResult = Group.Sync(user);
+            Result syncResult = await Group.Sync(user);
             Console.WriteLine("group sync:  " + syncResult);
 
-            Console.WriteLine("get group users:" + Group.Get(new GroupModel(){Id = "goupId1.NET"}));
+            Console.WriteLine("get group users:" + await Group.Get(new GroupModel() {Id = "goupId1.NET"}));
 
 
             /**
@@ -106,7 +109,7 @@ namespace io.rong.example.group
                 Name = "groupName"
             };
 
-            Result refreshResult = Group.Update(@group);
+            Result refreshResult = await Group.Update(@group);
             Console.WriteLine("refresh:  " + refreshResult);
 
             /**
@@ -122,10 +125,10 @@ namespace io.rong.example.group
                 Name = "groupName"
             };
 
-            Result groupInviteResult = rongCloud.Group.Invite(@group);
+            Result groupInviteResult = await rongCloud.Group.Invite(@group);
             Console.WriteLine("invite:  " + groupInviteResult);
 
-            Console.WriteLine("get group users:" + Group.Get(new GroupModel() { Id = "goupId1.NET" }));
+            Console.WriteLine("get group users:" + await Group.Get(new GroupModel() {Id = "goupId1.NET"}));
 
 
             /**
@@ -141,9 +144,9 @@ namespace io.rong.example.group
                 Name = "groupName"
             };
 
-            Result groupJoinResult = Group.Join(@group);
+            Result groupJoinResult = await Group.Join(@group);
             Console.WriteLine("join:  " + groupJoinResult);
-            Console.WriteLine("get group users:" + Group.Get(new GroupModel() { Id = "goupId1.NET" }));
+            Console.WriteLine("get group users:" + await Group.Get(new GroupModel() {Id = "goupId1.NET"}));
 
 
             /**
@@ -156,7 +159,7 @@ namespace io.rong.example.group
             {
                 Id = "goupId1.NET"
             };
-            GroupUserQueryResult getMemberesult = Group.Get(group);
+            GroupUserQueryResult getMemberesult = await Group.Get(group);
             Console.WriteLine("group getMember:  " + getMemberesult);
 
             /**
@@ -168,13 +171,13 @@ namespace io.rong.example.group
             group = new GroupModel()
             {
                 Id = "goupId1.NET",
-                Members = new GroupMember[]{  new GroupMember() { Id = "uPj70HUrRSUk-ixtt7iIGc" } },
+                Members = new GroupMember[] {new GroupMember() {Id = "uPj70HUrRSUk-ixtt7iIGc"}},
                 Name = "groupName"
             };
 
-            Result groupQuitResult = Group.Quit(@group);
+            Result groupQuitResult = await Group.Quit(@group);
             Console.WriteLine("quit:  " + groupQuitResult);
-            Console.WriteLine("get group users:" + Group.Get(new GroupModel() { Id = "goupId1.NET" }));
+            Console.WriteLine("get group users:" + await Group.Get(new GroupModel() {Id = "goupId1.NET"}));
 
 
             /**
@@ -184,9 +187,13 @@ namespace io.rong.example.group
              * 解散群组
              *
              */
-            members = new GroupMember[]{ new GroupMember() {
-                Id = "Vu-oC0_LQ6kgPqltm_zYtI"
-            } };
+            members = new GroupMember[]
+            {
+                new GroupMember()
+                {
+                    Id = "Vu-oC0_LQ6kgPqltm_zYtI"
+                }
+            };
 
             group = new GroupModel()
             {
@@ -194,10 +201,9 @@ namespace io.rong.example.group
                 Members = members
             };
 
-            Result groupDismissResult = Group.Dismiss(@group);
+            Result groupDismissResult = await Group.Dismiss(@group);
             Console.WriteLine("dismiss:  " + groupDismissResult);
             Console.ReadLine();
         }
-
     }
 }

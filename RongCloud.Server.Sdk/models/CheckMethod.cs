@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace io.rong.models
+﻿namespace RongCloud.Server.models
 {
     public class CheckMethod
 

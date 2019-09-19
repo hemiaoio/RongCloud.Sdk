@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace io.rong.models.push
+namespace RongCloud.Server.models.push
 {
     /**
      * 设备中的推送内容。（非必传）

@@ -1,8 +1,6 @@
-using io.rong.messages;
 using Newtonsoft.Json;
-using System;
 
-namespace io.rong.message
+namespace RongCloud.Server.messages
 {
 
     /**

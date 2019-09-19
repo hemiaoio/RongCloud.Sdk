@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace io.rong.util
+namespace RongCloud.Server.util
 {
     public class CodeUtil
     {

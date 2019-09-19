@@ -1,12 +1,13 @@
-﻿using io.rong.models;
-using io.rong.models.response;
-using System;
+﻿using System;
 using System.Text;
-using io.rong.models.message;
-using io.rong.util;
+using System.Threading.Tasks;
 using System.Web;
+using RongCloud.Server.models;
+using RongCloud.Server.models.message;
+using RongCloud.Server.models.response;
+using RongCloud.Server.util;
 
-namespace io.rong.methods.messages.group
+namespace RongCloud.Server.methods.message.@group
 {
     /**
      * 发送群组消息方法
@@ -42,7 +43,7 @@ namespace io.rong.methods.messages.group
          * @return ResponseResult
          * @throws Exception
          **/
-        public ResponseResult Send(GroupMessage message)
+        public async Task<ResponseResult> Send(GroupMessage message)
         {
             string code = CommonUtil.CheckFiled(message, PATH, CheckMethod.PUBLISH);
             if (null != code)
@@ -102,7 +103,7 @@ namespace io.rong.methods.messages.group
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
                 RongCloud.ApiHostType.Type + "/message/group/publish.json", "application/x-www-form-urlencoded");
 
             return RongJsonUtil.JsonStringToObj<ResponseResult>(
@@ -117,7 +118,7 @@ namespace io.rong.methods.messages.group
          * @return ResponseResult
          * @throws Exception
          **/
-        public ResponseResult SendMention(MentionMessage message)
+        public async Task<ResponseResult> SendMention(MentionMessage message)
         {
             string code = CommonUtil.CheckFiled(message, PATH, CheckMethod.PUBLISH);
             if (null != code)
@@ -176,7 +177,7 @@ namespace io.rong.methods.messages.group
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
                 RongCloud.ApiHostType.Type + "/message/group/publish.json", "application/x-www-form-urlencoded");
 
             return RongJsonUtil.JsonStringToObj<ResponseResult>(
@@ -191,7 +192,7 @@ namespace io.rong.methods.messages.group
          * @return ResponseResult
          * @throws Exception
          **/
-        public Result Recall(RecallMessage message)
+        public async Task<Result> Recall(RecallMessage message)
         {
             //需要校验的字段
             string errMsg = CommonUtil.CheckFiled(message, RECAL_PATH, CheckMethod.RECALL);
@@ -207,12 +208,12 @@ namespace io.rong.methods.messages.group
             sb.Append("&messageUID=").Append(HttpUtility.UrlEncode(message.UId, UTF8));
             sb.Append("&sentTime=").Append(HttpUtility.UrlEncode(message.SentTime, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&", StringComparison.Ordinal) == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
                 RongCloud.ApiHostType.Type + "/message/recall.json", "application/x-www-form-urlencoded");
 
             return RongJsonUtil.JsonStringToObj<ResponseResult>(

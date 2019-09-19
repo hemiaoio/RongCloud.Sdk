@@ -1,12 +1,13 @@
-using io.rong.models;
-using io.rong.models.response;
-using io.rong.util;
-using System;
+﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
-using io.rong.models.chatroom;
+using RongCloud.Server.models;
+using RongCloud.Server.models.chatroom;
+using RongCloud.Server.models.response;
+using RongCloud.Server.util;
 
-namespace io.rong.methods.chatroom.distribute
+namespace RongCloud.Server.methods.chatroom.distribute
 {
     public class Distribute
 
@@ -24,7 +25,6 @@ namespace io.rong.methods.chatroom.distribute
         {
             AppKey = appKey;
             AppSecret = appSecret;
-
         }
 
         /**
@@ -34,26 +34,28 @@ namespace io.rong.methods.chatroom.distribute
          *
          * @return ResponseResult
          **/
-        public ResponseResult Stop(ChatroomModel chatroom)
+        public async Task<ResponseResult> Stop(ChatroomModel chatroom)
         {
             string message = CommonUtil.CheckFiled(chatroom, PATH, CheckMethod.STOP_DISTRIBUTION);
             if (null != message)
             {
                 return RongJsonUtil.JsonStringToObj<ResponseResult>(message);
             }
+
             StringBuilder sb = new StringBuilder();
             sb.Append("&chatroomId=").Append(HttpUtility.UrlEncode(chatroom.Id, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                                           RongCloud.ApiHostType.Type + "/chatroom/message/stopDistribution.json", "application/x-www-form-urlencoded");
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/chatroom/message/stopDistribution.json",
+                "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.STOP_DISTRIBUTION, result));
-
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.STOP_DISTRIBUTION, result));
         }
 
         /**
@@ -63,7 +65,7 @@ namespace io.rong.methods.chatroom.distribute
          *
          * @return ResponseResult
          **/
-        public ResponseResult Resume(ChatroomModel chatroom)
+        public async Task<ResponseResult> Resume(ChatroomModel chatroom)
         {
             string message = CommonUtil.CheckFiled(chatroom, PATH, CheckMethod.RESUME_DISTRIBUTION);
             if (null != message)
@@ -74,14 +76,17 @@ namespace io.rong.methods.chatroom.distribute
             StringBuilder sb = new StringBuilder();
             sb.Append("&chatroomId=").Append(HttpUtility.UrlEncode(chatroom.Id, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                                               RongCloud.ApiHostType.Type + "/chatroom/message/resumeDistribution.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.RESUME_DISTRIBUTION, result));
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/chatroom/message/resumeDistribution.json",
+                "application/x-www-form-urlencoded");
+
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.RESUME_DISTRIBUTION, result));
         }
     }
 }

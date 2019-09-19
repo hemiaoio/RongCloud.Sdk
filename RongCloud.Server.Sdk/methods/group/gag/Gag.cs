@@ -1,12 +1,13 @@
-using io.rong.util;
-using io.rong.models.group;
-using io.rong.models;
-using io.rong.models.response;
-using System;
+﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
+using RongCloud.Server.models;
+using RongCloud.Server.models.@group;
+using RongCloud.Server.models.response;
+using RongCloud.Server.util;
 
-namespace io.rong.methods.group.gap
+namespace RongCloud.Server.methods.@group.gag
 {
     /**
      * 群组成员禁言服务
@@ -24,7 +25,6 @@ namespace io.rong.methods.group.gap
         {
             AppKey = appKey;
             AppSecret = appSecret;
-
         }
 
         public string AppKey { get; set; }
@@ -40,7 +40,7 @@ namespace io.rong.methods.group.gap
         *
         * @return Result
         **/
-        public Result Add(GroupModel group)
+        public async Task<Result> Add(GroupModel group)
         {
             string message = CommonUtil.CheckFiled(group, PATH, CheckMethod.ADD);
             if (null != message)
@@ -59,18 +59,20 @@ namespace io.rong.methods.group.gap
             {
                 sb.Append("&userId=").Append(HttpUtility.UrlEncode(member.Id, UTF8));
             }
+
             sb.Append("&groupId=").Append(HttpUtility.UrlEncode(@group.Id, UTF8));
             sb.Append("&minute=").Append(HttpUtility.UrlEncode(group.Minute.ToString(), UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                            RongCloud.ApiHostType.Type + "/group/user/gag/add.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.ADD, result));
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/group/user/gag/add.json", "application/x-www-form-urlencoded");
 
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.ADD, result));
         }
 
         /**
@@ -80,24 +82,27 @@ namespace io.rong.methods.group.gap
          *
          * @return ListGagGroupUserResult
          **/
-        public ListGagGroupUserResult GetList(string groupId)
+        public async Task<ListGagGroupUserResult> GetList(string groupId)
         {
             string message = CommonUtil.CheckParam("id", groupId, PATH, CheckMethod.GETLIST);
             if (null != message)
             {
                 return RongJsonUtil.JsonStringToObj<ListGagGroupUserResult>(message);
             }
+
             StringBuilder sb = new StringBuilder();
             sb.Append("&groupId=").Append(HttpUtility.UrlEncode(groupId, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                                RongCloud.ApiHostType.Type + "/group/user/gag/list.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ListGagGroupUserResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.GETLIST, result));
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/group/user/gag/list.json", "application/x-www-form-urlencoded");
+
+            return RongJsonUtil.JsonStringToObj<ListGagGroupUserResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.GETLIST, result));
         }
 
         /**
@@ -107,7 +112,7 @@ namespace io.rong.methods.group.gap
          *
          * @return ResponseResult
          **/
-        public Result Remove(GroupModel group)
+        public async Task<Result> Remove(GroupModel group)
         {
             //参数校验
             string message = CommonUtil.CheckFiled(group, PATH, CheckMethod.REMOVE);
@@ -115,6 +120,7 @@ namespace io.rong.methods.group.gap
             {
                 return RongJsonUtil.JsonStringToObj<ResponseResult>(message);
             }
+
             StringBuilder sb = new StringBuilder();
 
             GroupMember[] members = group.Members;
@@ -125,14 +131,16 @@ namespace io.rong.methods.group.gap
 
             sb.Append("&groupId=").Append(HttpUtility.UrlEncode(@group.Id, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                                    RongCloud.ApiHostType.Type + "/group/user/gag/rollback.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ListGagGroupUserResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.REMOVE, result));
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/group/user/gag/rollback.json", "application/x-www-form-urlencoded");
+
+            return RongJsonUtil.JsonStringToObj<ListGagGroupUserResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.REMOVE, result));
         }
     }
 }

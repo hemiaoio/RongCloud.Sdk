@@ -1,9 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
-
-namespace io.rong.models.response
+namespace RongCloud.Server.models.response
 {
     public class TagListResult : Result
     {

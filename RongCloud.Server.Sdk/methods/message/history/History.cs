@@ -1,11 +1,12 @@
-using io.rong.models;
-using io.rong.models.response;
-using System;
+﻿using System;
 using System.Text;
-using io.rong.util;
+using System.Threading.Tasks;
 using System.Web;
+using RongCloud.Server.models;
+using RongCloud.Server.models.response;
+using RongCloud.Server.util;
 
-namespace io.rong.methods.messages.history
+namespace RongCloud.Server.methods.message.history
 {
     /**
      * 消息历史记录服务
@@ -25,7 +26,6 @@ namespace io.rong.methods.messages.history
         {
             AppKey = appKey;
             AppSecret = appSecret;
-
         }
 
         public string AppKey { get; set; }
@@ -42,7 +42,7 @@ namespace io.rong.methods.messages.history
 * @return HistoryMessageResult
 * @throws Exception
 **/
-        public HistoryMessageResult Get(string date)
+        public async Task<HistoryMessageResult> Get(string date)
         {
             if (date == null)
             {
@@ -52,14 +52,16 @@ namespace io.rong.methods.messages.history
             StringBuilder sb = new StringBuilder();
             sb.Append("&date=").Append(HttpUtility.UrlEncode(date, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                                          RongCloud.ApiHostType.Type + "/message/history.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<HistoryMessageResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.GET, result));
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/message/history.json", "application/x-www-form-urlencoded");
+
+            return RongJsonUtil.JsonStringToObj<HistoryMessageResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.GET, result));
         }
 
         /**
@@ -70,7 +72,7 @@ namespace io.rong.methods.messages.history
          * @return ResponseResult
          * @throws Exception
          **/
-        public ResponseResult Remove(string date)
+        public async Task<ResponseResult> Remove(string date)
         {
             if (date == null)
             {
@@ -80,15 +82,16 @@ namespace io.rong.methods.messages.history
             StringBuilder sb = new StringBuilder();
             sb.Append("&date=").Append(HttpUtility.UrlEncode(date, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                                              RongCloud.ApiHostType.Type + "/message/history/delete.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.REMOVE, result));
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/message/history/delete.json", "application/x-www-form-urlencoded");
 
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.REMOVE, result));
         }
     }
 }

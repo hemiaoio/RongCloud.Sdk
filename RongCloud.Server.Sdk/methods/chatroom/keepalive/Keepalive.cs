@@ -1,12 +1,13 @@
-using io.rong.models;
-using io.rong.models.response;
-using io.rong.util;
-using System;
+﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
-using io.rong.models.chatroom;
+using RongCloud.Server.models;
+using RongCloud.Server.models.chatroom;
+using RongCloud.Server.models.response;
+using RongCloud.Server.util;
 
-namespace io.rong.methods.chatroom.keepalive
+namespace RongCloud.Server.methods.chatroom.keepalive
 {
     public class Keepalive
 
@@ -24,8 +25,8 @@ namespace io.rong.methods.chatroom.keepalive
         {
             AppKey = appKey;
             AppSecret = appSecret;
-
         }
+
         /**
          * 添加聊天室保活方法
          *
@@ -33,26 +34,29 @@ namespace io.rong.methods.chatroom.keepalive
          *
          * @return ResponseResult
          **/
-        public ResponseResult Add(ChatroomModel chatroom)
+        public async Task<ResponseResult> Add(ChatroomModel chatroom)
         {
-
             string message = CommonUtil.CheckFiled(chatroom, PATH, CheckMethod.ADD);
             if (null != message)
             {
                 return RongJsonUtil.JsonStringToObj<ResponseResult>(message);
             }
+
             StringBuilder sb = new StringBuilder();
             sb.Append("&chatroomId=").Append(HttpUtility.UrlEncode(chatroom.Id, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                                                 RongCloud.ApiHostType.Type + "/chatroom/keepalive/add.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.ADD, result));
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/chatroom/keepalive/add.json", "application/x-www-form-urlencoded");
+
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.ADD, result));
         }
+
         /**
          * 删除聊天室保活方法
          *
@@ -60,37 +64,42 @@ namespace io.rong.methods.chatroom.keepalive
          *
          * @return ResponseResult
          **/
-        public ResponseResult Remove(ChatroomModel chatroom)
+        public async Task<ResponseResult> Remove(ChatroomModel chatroom)
         {
             string message = CommonUtil.CheckFiled(chatroom, PATH, CheckMethod.REMOVE);
             if (null != message)
             {
                 return RongJsonUtil.JsonStringToObj<ResponseResult>(message);
             }
+
             StringBuilder sb = new StringBuilder();
             sb.Append("&chatroomId=").Append(HttpUtility.UrlEncode(chatroom.Id, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                                                     RongCloud.ApiHostType.Type + "/chatroom/keepalive/remove.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.REMOVE, result));
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/chatroom/keepalive/remove.json", "application/x-www-form-urlencoded");
+
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.REMOVE, result));
         }
+
         /**
          * 获取聊天室保活
          *
          *
          * @return ResponseResult
          **/
-        public ChatroomKeepaliveResult GetList()
+        public async Task<ChatroomKeepaliveResult> GetList()
         {
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, "",
-                           RongCloud.ApiHostType.Type + "/chatroom/keepalive/query.json", "application/x-www-form-urlencoded");
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, "",
+                RongCloud.ApiHostType.Type + "/chatroom/keepalive/query.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ChatroomKeepaliveResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.GETLIST, result));
+            return RongJsonUtil.JsonStringToObj<ChatroomKeepaliveResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.GETLIST, result));
         }
     }
 }

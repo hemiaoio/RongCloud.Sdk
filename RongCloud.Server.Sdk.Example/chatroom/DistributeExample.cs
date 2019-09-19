@@ -1,9 +1,10 @@
-using io.rong.models.response;
-using io.rong.methods.chatroom.distribute;
-using io.rong.models.chatroom;
-using System;
+﻿using System;
+using System.Threading.Tasks;
+using RongCloud.Server.methods.chatroom.distribute;
+using RongCloud.Server.models.chatroom;
+using RongCloud.Server.models.response;
 
-namespace io.rong.example.chatroom
+namespace RongCloud.Server.Sdk.Example.chatroom
 {
     public class DistributeExample
 
@@ -12,6 +13,7 @@ namespace io.rong.example.chatroom
          * 此处替换成您的appKey
          * */
         private static readonly string appKey = "kj7swf8okyqt2";
+
         /**
          * 此处替换成您的appSecret
          * */
@@ -23,9 +25,8 @@ namespace io.rong.example.chatroom
         private static readonly string api = "http://api.cn.ronghub.com";
 
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-
             RongCloud rongCloud = RongCloud.GetInstance(appKey, appSecret);
             //自定义 api地址方式
             //RongCloud rongCloud = RongCloud.getInstance(appKey, appSecret,api);
@@ -42,7 +43,7 @@ namespace io.rong.example.chatroom
             {
                 Id = "d7ec7a8b8d8546c98b0973417209a548"
             };
-            ResponseResult result = distribute.Stop(chatroomModel);
+            ResponseResult result = await distribute.Stop(chatroomModel);
 
             Console.WriteLine("stopDistributionMessage:  " + result);
 
@@ -51,7 +52,7 @@ namespace io.rong.example.chatroom
              *
              * 聊天室消息恢复分发方法（每秒钟限 100 次）
              */
-            ResponseResult resumeResult = distribute.Resume(chatroomModel);
+            ResponseResult resumeResult = await distribute.Resume(chatroomModel);
             Console.WriteLine("resumeDistributionMessage:  " + resumeResult);
             Console.ReadLine();
         }

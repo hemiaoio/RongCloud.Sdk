@@ -1,12 +1,13 @@
-using io.rong.util;
-using io.rong.models.conversation;
-using io.rong.models;
-using io.rong.models.response;
-using System;
+﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
+using RongCloud.Server.models;
+using RongCloud.Server.models.conversation;
+using RongCloud.Server.models.response;
+using RongCloud.Server.util;
 
-namespace io.rong.methods.conversation
+namespace RongCloud.Server.methods.conversation
 {
     /**
      *
@@ -31,15 +32,15 @@ namespace io.rong.methods.conversation
         {
             AppKey = appKey;
             AppSecret = appSecret;
-
         }
+
         /**
          * 设置用户某会话接收新消息时是否进行消息提醒。
          *
          * @param conversation 会话信息 其中type(必传)
          * @return ResponseResult
          **/
-        public ResponseResult Mute(ConversationModel conversation)
+        public async Task<ResponseResult> Mute(ConversationModel conversation)
         {
             string message = CommonUtil.CheckFiled(conversation, PATH, CheckMethod.MUTE);
             if (null != message)
@@ -53,14 +54,17 @@ namespace io.rong.methods.conversation
             sb.Append("&targetId=").Append(HttpUtility.UrlEncode(conversation.TargetId, UTF8));
             sb.Append("&isMuted=").Append(HttpUtility.UrlEncode("1", UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                        RongCloud.ApiHostType.Type + "/conversation/notification/set.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.MUTE, result));
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/conversation/notification/set.json",
+                "application/x-www-form-urlencoded");
+
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.MUTE, result));
         }
 
         /**
@@ -69,7 +73,7 @@ namespace io.rong.methods.conversation
          * @param conversation 会话信息 其中type(必传)
          * @return ResponseResult
          **/
-        public ResponseResult UnMute(ConversationModel conversation)
+        public async Task<ResponseResult> UnMute(ConversationModel conversation)
         {
             string message = CommonUtil.CheckFiled(conversation, PATH, CheckMethod.UNMUTE);
             if (null != message)
@@ -83,16 +87,17 @@ namespace io.rong.methods.conversation
             sb.Append("&targetId=").Append(HttpUtility.UrlEncode(conversation.TargetId, UTF8));
             sb.Append("&isMuted=").Append(HttpUtility.UrlEncode("0", UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                           RongCloud.ApiHostType.Type + "/conversation/notification/set.json", "application/x-www-form-urlencoded");
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/conversation/notification/set.json",
+                "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.UNMUTE, result));
-
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.UNMUTE, result));
         }
     }
 }

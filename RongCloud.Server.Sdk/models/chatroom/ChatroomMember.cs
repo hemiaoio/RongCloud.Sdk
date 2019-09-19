@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
-using System;
 
-namespace io.rong.models.chatroom
+namespace RongCloud.Server.models.chatroom
 {
     public class ChatroomMember
 

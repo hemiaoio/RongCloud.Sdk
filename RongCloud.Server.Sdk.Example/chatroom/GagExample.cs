@@ -1,9 +1,10 @@
-using io.rong.models.response;
-using io.rong.methods.chatroom.gag;
-using io.rong.models.chatroom;
-using System;
+﻿using System;
+using System.Threading.Tasks;
+using RongCloud.Server.methods.chatroom.gag;
+using RongCloud.Server.models.chatroom;
+using RongCloud.Server.models.response;
 
-namespace io.rong.example.chatroom
+namespace RongCloud.Server.Sdk.Example.chatroom
 {
     public class GagExample
 
@@ -12,17 +13,19 @@ namespace io.rong.example.chatroom
          * 此处替换成您的appKey
          * */
         private static readonly string appKey = "appKey";
+
         /**
          * 此处替换成您的appSecret
          * */
         private static readonly string appSecret = "appSecret";
+
         /**
          * 自定义api地址
          * */
         private static readonly string api = "http://api.cn.ronghub.com";
 
 
-        static void main(string[] args)
+        static async Task main(string[] args)
         {
             RongCloud rongCloud = RongCloud.GetInstance(appKey, appSecret);
             //自定义 api地址方式
@@ -36,12 +39,14 @@ namespace io.rong.example.chatroom
              * 被禁言用户可以接收查看聊天室中用户聊天信息，但不能发送消息.）获取某用户的黑名单列表方法（每秒钟限 100 次）
              */
 
-            ChatroomMember[] members = {
-                new ChatroomMember() {
+            ChatroomMember[] members =
+            {
+                new ChatroomMember()
+                {
                     Id = "qawr34h"
                 },
-                new ChatroomMember(){ Id = "qawr35h"}
-        };
+                new ChatroomMember() {Id = "qawr35h"}
+            };
             ChatroomModel chatroom = new ChatroomModel()
             {
                 Id = "hjhf07kk",
@@ -49,7 +54,7 @@ namespace io.rong.example.chatroom
                 Minute = 5
             };
 
-            ResponseResult result = gag.Add(chatroom);
+            ResponseResult result = await gag.Add(chatroom);
             Console.WriteLine("addGagUser:  " + result);
 
             /**
@@ -61,7 +66,7 @@ namespace io.rong.example.chatroom
             {
                 Id = "hjhf07kk"
             };
-            ListGagChatroomUserResult chatroomListGagUserResult = gag.GetList(chatroom);
+            ListGagChatroomUserResult chatroomListGagUserResult = await gag.GetList(chatroom);
             Console.WriteLine("ListGagUser:  " + chatroomListGagUserResult);
 
             /**
@@ -76,7 +81,7 @@ namespace io.rong.example.chatroom
                 Members = members
             };
 
-            ResponseResult removeResult = gag.Remove(chatroom);
+            ResponseResult removeResult = await gag.Remove(chatroom);
             Console.WriteLine("rollbackGagUser:  " + result);
 
             Console.ReadLine();

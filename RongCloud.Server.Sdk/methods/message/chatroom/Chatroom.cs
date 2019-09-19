@@ -1,12 +1,13 @@
-using io.rong.models;
-using io.rong.models.response;
-using System;
+﻿using System;
 using System.Text;
-using io.rong.models.message;
-using io.rong.util;
+using System.Threading.Tasks;
 using System.Web;
+using RongCloud.Server.models;
+using RongCloud.Server.models.message;
+using RongCloud.Server.models.response;
+using RongCloud.Server.util;
 
-namespace io.rong.methods.messages.chatroom
+namespace RongCloud.Server.methods.message.chatroom
 {
     /**
      * 发送聊天室消息方法
@@ -29,7 +30,6 @@ namespace io.rong.methods.messages.chatroom
         {
             AppKey = appKey;
             AppSecret = appSecret;
-
         }
 
         /**
@@ -40,14 +40,14 @@ namespace io.rong.methods.messages.chatroom
          * @return ResponseResult
          * @throws Exception
          **/
-        public ResponseResult Send(ChatroomMessage message)
+        public async Task<ResponseResult> Send(ChatroomMessage message)
         {
-
             string errMsg = CommonUtil.CheckFiled(message, PATH, CheckMethod.SEND);
             if (null != errMsg)
             {
                 return RongJsonUtil.JsonStringToObj<ResponseResult>(errMsg);
             }
+
             StringBuilder sb = new StringBuilder();
             sb.Append("&fromUserId=").Append(HttpUtility.UrlEncode(message.SenderId, UTF8));
 
@@ -63,15 +63,16 @@ namespace io.rong.methods.messages.chatroom
             sb.Append("&objectName=").Append(HttpUtility.UrlEncode(message.Content.GetType(), UTF8));
             sb.Append("&content=").Append(HttpUtility.UrlEncode(message.Content.ToString(), UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                                   RongCloud.ApiHostType.Type + "/message/chatroom/publish.json", "application/x-www-form-urlencoded");
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/message/chatroom/publish.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.PUBLISH, result));
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.PUBLISH, result));
         }
 
         /**
@@ -82,14 +83,14 @@ namespace io.rong.methods.messages.chatroom
          * @return ResponseResult
          * @throws Exception
          **/
-        public ResponseResult Broadcast(ChatroomMessage message)
+        public async Task<ResponseResult> Broadcast(ChatroomMessage message)
         {
-
             string code = CommonUtil.CheckFiled(message, PATH, CheckMethod.BROADCAST);
             if (null != code)
             {
                 return RongJsonUtil.JsonStringToObj<ResponseResult>(code);
             }
+
             StringBuilder sb = new StringBuilder();
             sb.Append("&fromUserId=").Append(HttpUtility.UrlEncode(message.SenderId, UTF8));
 
@@ -97,16 +98,16 @@ namespace io.rong.methods.messages.chatroom
             sb.Append("&objectName=").Append(HttpUtility.UrlEncode(message.Content.GetType(), UTF8));
             sb.Append("&content=").Append(HttpUtility.UrlEncode(message.Content.ToString(), UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                                      RongCloud.ApiHostType.Type + "/message/chatroom/broadcast.json", "application/x-www-form-urlencoded");
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/message/chatroom/broadcast.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.BROADCAST, result));
-
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.BROADCAST, result));
         }
     }
 }

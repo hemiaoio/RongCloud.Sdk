@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
-using System;
 
-namespace io.rong.models.response
+namespace RongCloud.Server.models.response
 {
     public class ChatroomDemotionMsgResult : Result
 

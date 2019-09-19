@@ -1,7 +1,6 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace io.rong.models.push.tag
+namespace RongCloud.Server.models.user.tag
 {
     public class TagModel
     {

@@ -1,7 +1,6 @@
-using io.rong.messages;
-using System;
+using RongCloud.Server.messages;
 
-namespace io.rong.models.message
+namespace RongCloud.Server.models.message
 {
 
     public class BroadcastMessage : MessageModel

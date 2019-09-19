@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Reflection;
-using io.rong.models.response;
-using io.rong.models.push;
+using RongCloud.Server.models.response;
+using RongCloud.Server.models.user;
 
-namespace io.rong.util
+namespace RongCloud.Server.util
 {
     public class CommonUtil
 

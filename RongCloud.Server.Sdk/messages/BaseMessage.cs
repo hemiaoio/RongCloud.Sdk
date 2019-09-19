@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace io.rong.messages
+﻿namespace RongCloud.Server.messages
 {
     public abstract class BaseMessage
     {

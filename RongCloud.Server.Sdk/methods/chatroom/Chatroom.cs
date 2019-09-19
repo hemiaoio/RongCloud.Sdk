@@ -1,19 +1,20 @@
-﻿using io.rong.util;
-using io.rong.methods.chatroom.block;
-using io.rong.methods.chatroom.ban;
-using io.rong.methods.chatroom.demotion;
-using io.rong.methods.chatroom.distribute;
-using io.rong.methods.chatroom.gag;
-using io.rong.methods.chatroom.keepalive;
-using io.rong.methods.chatroom.whitelist;
-using io.rong.models;
-using io.rong.models.response;
-using io.rong.models.chatroom;
-using System;
+﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
+using RongCloud.Server.methods.chatroom.ban;
+using RongCloud.Server.methods.chatroom.block;
+using RongCloud.Server.methods.chatroom.demotion;
+using RongCloud.Server.methods.chatroom.distribute;
+using RongCloud.Server.methods.chatroom.gag;
+using RongCloud.Server.methods.chatroom.keepalive;
+using RongCloud.Server.methods.chatroom.whitelist;
+using RongCloud.Server.models;
+using RongCloud.Server.models.chatroom;
+using RongCloud.Server.models.response;
+using RongCloud.Server.util;
 
-namespace io.rong.methods.chatroom
+namespace RongCloud.Server.methods.chatroom
 {
     /**
  *
@@ -24,7 +25,6 @@ namespace io.rong.methods.chatroom
     public class Chatroom
 
     {
-
         private static readonly Encoding UTF8 = Encoding.UTF8;
         private static readonly string PATH = "chatroom";
         private string appKey;
@@ -40,7 +40,8 @@ namespace io.rong.methods.chatroom
 
         internal RongCloud RongCloud
         {
-            get => rongCloud; set
+            get => rongCloud;
+            set
             {
                 rongCloud = value;
                 gag.RongCloud = value;
@@ -65,8 +66,8 @@ namespace io.rong.methods.chatroom
             block = new Block(appKey, appSecret);
             distribute = new Distribute(appKey, appSecret);
             ban = new Ban(appKey, appSecret);
-
         }
+
         /**
          * 创建聊天室方法 
          * 
@@ -74,7 +75,7 @@ namespace io.rong.methods.chatroom
          *
          * @return ResponseResult
          **/
-        public ResponseResult Create(ChatroomModel[] chatrooms)
+        public async Task<ResponseResult> Create(ChatroomModel[] chatrooms)
         {
             if (chatrooms == null)
             {
@@ -89,17 +90,18 @@ namespace io.rong.methods.chatroom
             }
 
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(appKey, appSecret, body,
-                                                     rongCloud.ApiHostType.Type + "/chatroom/create.json", "application/x-www-form-urlencoded");
+            string result = await RongHttpClient.ExecutePost(appKey, appSecret, body,
+                rongCloud.ApiHostType.Type + "/chatroom/create.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.CREATE, result));
-
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.CREATE, result));
         }
+
         /**
          * 销毁聊天室方法
          *
@@ -107,31 +109,36 @@ namespace io.rong.methods.chatroom
          *
          * @return ResponseResult
          **/
-        public ResponseResult Destroy(ChatroomModel chatroom)
+        public async Task<ResponseResult> Destroy(ChatroomModel chatroom)
         {
             if (chatroom == null)
             {
                 return new ResponseResult(1002, "Paramer 'chatroomId' is required");
             }
+
             string message = CommonUtil.CheckFiled(chatroom, PATH, CheckMethod.DESTORY);
             if (null != message)
             {
                 return RongJsonUtil.JsonStringToObj<ResponseResult>(message);
             }
+
             StringBuilder sb = new StringBuilder();
 
             sb.Append("&chatroomId=").Append(HttpUtility.UrlEncode(chatroom.Id, UTF8));
 
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
-            string result = RongHttpClient.ExecutePost(appKey, appSecret, body,
-                                             rongCloud.ApiHostType.Type + "/chatroom/destroy.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.DESTORY, result));
+            string result = await RongHttpClient.ExecutePost(appKey, appSecret, body,
+                rongCloud.ApiHostType.Type + "/chatroom/destroy.json", "application/x-www-form-urlencoded");
+
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.DESTORY, result));
         }
+
         /**
          * 查询聊天室内用户方法
          *
@@ -139,7 +146,7 @@ namespace io.rong.methods.chatroom
          *
          * @return ChatroomUserQueryResult
          **/
-        public ChatroomUserQueryResult Get(ChatroomModel chatroom)
+        public async Task<ChatroomUserQueryResult> Get(ChatroomModel chatroom)
         {
             string message = CommonUtil.CheckFiled(chatroom, PATH, CheckMethod.GET);
             if (null != message)
@@ -152,15 +159,18 @@ namespace io.rong.methods.chatroom
             sb.Append("&count=").Append(HttpUtility.UrlEncode(chatroom.Count.ToString(), UTF8));
             sb.Append("&order=").Append(HttpUtility.UrlEncode(chatroom.Order.ToString(), UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
-            string result = RongHttpClient.ExecutePost(appKey, appSecret, body,
-                                     rongCloud.ApiHostType.Type + "/chatroom/user/query.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ChatroomUserQueryResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.GET, result));
+            string result = await RongHttpClient.ExecutePost(appKey, appSecret, body,
+                rongCloud.ApiHostType.Type + "/chatroom/user/query.json", "application/x-www-form-urlencoded");
+
+            return RongJsonUtil.JsonStringToObj<ChatroomUserQueryResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.GET, result));
         }
+
         /**
          * 查询用户是否存在聊天室
          *
@@ -168,7 +178,7 @@ namespace io.rong.methods.chatroom
          *
          * @return ResponseResult
          **/
-        public CheckChatRoomUserResult IsExist(ChatroomMember member)
+        public async Task<CheckChatRoomUserResult> IsExist(ChatroomMember member)
         {
             string message = CommonUtil.CheckFiled(member, PATH, CheckMethod.ISEXIST);
             if (null != message)
@@ -180,14 +190,16 @@ namespace io.rong.methods.chatroom
             sb.Append("&chatroomId=").Append(HttpUtility.UrlEncode(member.ChatroomId, UTF8));
             sb.Append("&userId=").Append(HttpUtility.UrlEncode(member.Id, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
-            string result = RongHttpClient.ExecutePost(appKey, appSecret, body,
-                             rongCloud.ApiHostType.Type + "/chatroom/user/exist.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<CheckChatRoomUserResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.ISEXIST, result));
+            string result = await RongHttpClient.ExecutePost(appKey, appSecret, body,
+                rongCloud.ApiHostType.Type + "/chatroom/user/exist.json", "application/x-www-form-urlencoded");
+
+            return RongJsonUtil.JsonStringToObj<CheckChatRoomUserResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.ISEXIST, result));
         }
     }
 }

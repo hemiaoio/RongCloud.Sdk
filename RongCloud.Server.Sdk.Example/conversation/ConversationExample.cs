@@ -1,10 +1,11 @@
-using io.rong.methods.conversation;
-using io.rong.models.conversation;
-using io.rong.models.response;
-using io.rong.util;
-using System;
+﻿using System;
+using System.Threading.Tasks;
+using RongCloud.Server.methods.conversation;
+using RongCloud.Server.models.conversation;
+using RongCloud.Server.models.response;
+using RongCloud.Server.util;
 
-namespace io.rong.example.conversation
+namespace RongCloud.Server.Sdk.Example.conversation
 {
     /**
      *
@@ -19,18 +20,19 @@ namespace io.rong.example.conversation
          * 此处替换成您的appKey
          * */
         private static readonly string appKey = "appKey";
+
         /**
          * 此处替换成您的appSecret
          * */
         private static readonly string appSecret = "appSecret";
+
         /**
          * 自定义api地址
          * */
         private static readonly string api = "http://api.cn.ronghub.com";
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-
             RongCloud rongCloud = RongCloud.GetInstance(appKey, appSecret);
             //自定义 api 地址方式
             // RongCloud rongCloud = RongCloud.getInstance(appKey, appSecret,api);
@@ -50,7 +52,7 @@ namespace io.rong.example.conversation
              * 设置消息免打扰
              *
              */
-            ResponseResult muteConversationResult = Conversation.Mute(conversation);
+            ResponseResult muteConversationResult = await Conversation.Mute(conversation);
 
             Console.WriteLine("muteConversationResult:  " + muteConversationResult);
 
@@ -60,7 +62,7 @@ namespace io.rong.example.conversation
              * 解除消息免打扰
              *
              * */
-            ResponseResult unMuteConversationResult = Conversation.UnMute(conversation);
+            ResponseResult unMuteConversationResult = await Conversation.UnMute(conversation);
 
             Console.WriteLine("unMuteConversationResult:  " + unMuteConversationResult);
             Console.ReadLine();

@@ -1,17 +1,16 @@
-﻿using io.rong.methods.messages._private;
-using io.rong.methods.messages.chatroom;
-using io.rong.methods.messages.discussion;
-using io.rong.methods.messages.system;
-using io.rong.methods.messages.history;
-using System;
-using System.Text;
+﻿using System.Text;
+using RongCloud.Server.methods.message._private;
+using RongCloud.Server.methods.message.chatroom;
+using RongCloud.Server.methods.message.discussion;
+using RongCloud.Server.methods.message.@group;
+using RongCloud.Server.methods.message.history;
+using RongCloud.Server.methods.message.system;
 
-namespace io.rong.methods.message
+namespace RongCloud.Server.methods.message
 {
     public class Message
 
     {
-
         private static readonly Encoding UTF8 = Encoding.UTF8;
         private static readonly string PATH = "message";
         private static string method = "";
@@ -20,7 +19,7 @@ namespace io.rong.methods.message
         public Private msgPrivate;
         public Chatroom chatroom;
         public Discussion discussion;
-        public messages.group.Group group;
+        public Group group;
         public History history;
         public MsgSystem system;
         private RongCloud rongCloud;
@@ -47,10 +46,9 @@ namespace io.rong.methods.message
             msgPrivate = new Private(appKey, appSecret);
             chatroom = new Chatroom(appKey, appSecret);
             discussion = new Discussion(appKey, appSecret);
-            group = new messages.group.Group(appKey, appSecret);
+            group = new Group(appKey, appSecret);
             history = new History(appKey, appSecret);
             system = new MsgSystem(appKey, appSecret);
-
         }
     }
 }

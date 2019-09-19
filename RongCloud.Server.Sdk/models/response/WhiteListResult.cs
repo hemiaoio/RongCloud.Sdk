@@ -1,8 +1,7 @@
-using io.rong.models.push;
 using Newtonsoft.Json;
-using System;
+using RongCloud.Server.models.user;
 
-namespace io.rong.models.response
+namespace RongCloud.Server.models.response
 {
     public class WhiteListResult : Result
 

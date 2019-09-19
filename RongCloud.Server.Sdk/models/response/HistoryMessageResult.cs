@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
-using System;
 
-namespace io.rong.models.response
+namespace RongCloud.Server.models.response
 {
     /**
      * historyMessage返回结果

@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
 
-namespace io.rong.models.message
+namespace RongCloud.Server.models.message
 {
     public class TemplateMessage
     {

@@ -1,8 +1,9 @@
-using io.rong.models.response;
-using io.rong.methods.chatroom.whitelist;
-using System;
+﻿using System;
+using System.Threading.Tasks;
+using RongCloud.Server.methods.chatroom.whitelist;
+using RongCloud.Server.models.response;
 
-namespace io.rong.example.chatroom.whitelist
+namespace RongCloud.Server.Sdk.Example.chatroom.whitelist
 {
     public class MessageExample
 
@@ -20,7 +21,7 @@ namespace io.rong.example.chatroom.whitelist
          * */
         private static readonly string api = "http://api.cn.ronghub.com";
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             RongCloud rongCloud = RongCloud.GetInstance(appKey, appSecret);
             //自定义 api地址方式
@@ -34,14 +35,14 @@ namespace io.rong.example.chatroom.whitelist
              * 添加聊天室全局禁言
              * */
 
-            ResponseResult addResult = whitelist.Message.Add(messageType);
+            ResponseResult addResult = await whitelist.Message.Add(messageType);
             Console.WriteLine("add whitelist:  " + addResult);
             /**
              * API 文档: http://www.rongcloud.cn/docs/server_sdk_api/chatroom/whitelist/message.html#getList
              * 添加聊天室全局禁言
              * */
 
-            ChatroomWhitelistMsgResult getResult = whitelist.Message.GetList();
+            ChatroomWhitelistMsgResult getResult = await whitelist.Message.GetList();
             Console.WriteLine("get whitelist:  " + getResult);
 
             /**
@@ -49,7 +50,7 @@ namespace io.rong.example.chatroom.whitelist
              * 添加聊天室全局禁言
              * */
 
-            ResponseResult removeResult = whitelist.Message.Remove(messageType);
+            ResponseResult removeResult = await whitelist.Message.Remove(messageType);
             Console.WriteLine("remove whitelist:  " + addResult);
 
             Console.ReadLine();

@@ -1,11 +1,12 @@
-using io.rong.models;
-using io.rong.models.response;
-using io.rong.util;
-using System;
+﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
+using RongCloud.Server.models;
+using RongCloud.Server.models.response;
+using RongCloud.Server.util;
 
-namespace io.rong.methods.chatroom.demotion
+namespace RongCloud.Server.methods.chatroom.demotion
 {
     public class Demotion
 
@@ -23,8 +24,8 @@ namespace io.rong.methods.chatroom.demotion
         {
             AppKey = appKey;
             AppSecret = appSecret;
-
         }
+
         /**
          * 添加应用内聊天室降级消息
          *
@@ -32,13 +33,14 @@ namespace io.rong.methods.chatroom.demotion
          *
          * @return ResponseResult
          **/
-        public ResponseResult Add(string[] objectName)
+        public async Task<ResponseResult> Add(string[] objectName)
         {
             string message = CommonUtil.CheckParam("type", objectName, PATH, CheckMethod.ADD);
             if (null != message)
             {
                 return RongJsonUtil.JsonStringToObj<ResponseResult>(message);
             }
+
             StringBuilder sb = new StringBuilder();
 
             for (int i = 0; i < objectName.Length; i++)
@@ -48,14 +50,17 @@ namespace io.rong.methods.chatroom.demotion
             }
 
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                                       RongCloud.ApiHostType.Type + "/chatroom/message/priority/add.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.ADD, result));
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/chatroom/message/priority/add.json",
+                "application/x-www-form-urlencoded");
+
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.ADD, result));
         }
 
         /**
@@ -65,13 +70,14 @@ namespace io.rong.methods.chatroom.demotion
          *
          * @return ResponseResult
          **/
-        public ResponseResult Remove(string[] objectNames)
+        public async Task<ResponseResult> Remove(string[] objectNames)
         {
             string message = CommonUtil.CheckParam("type", objectNames, PATH, CheckMethod.REMOVE);
             if (null != message)
             {
                 return RongJsonUtil.JsonStringToObj<ResponseResult>(message);
             }
+
             StringBuilder sb = new StringBuilder();
 
             for (int i = 0; i < objectNames.Length; i++)
@@ -81,30 +87,33 @@ namespace io.rong.methods.chatroom.demotion
             }
 
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                                          RongCloud.ApiHostType.Type + "/chatroom/message/priority/remove.json", "application/x-www-form-urlencoded");
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/chatroom/message/priority/remove.json",
+                "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.REMOVE, result));
-
-
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.REMOVE, result));
         }
+
         /**
          * 获取应用内聊天室降级消息
          *
          *
          * @return ResponseResult
          **/
-        public ChatroomDemotionMsgResult GetList()
+        public async Task<ChatroomDemotionMsgResult> GetList()
         {
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, "",
-                            RongCloud.ApiHostType.Type + "/chatroom/message/priority/query.json", "application/x-www-form-urlencoded");
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, "",
+                RongCloud.ApiHostType.Type + "/chatroom/message/priority/query.json",
+                "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ChatroomDemotionMsgResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.GETLIST, result));
+            return RongJsonUtil.JsonStringToObj<ChatroomDemotionMsgResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.GETLIST, result));
         }
     }
 }

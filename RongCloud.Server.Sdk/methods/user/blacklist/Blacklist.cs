@@ -1,10 +1,11 @@
-﻿using io.rong.util;
-using io.rong.models;
-using io.rong.models.response;
-using io.rong.models.push;
-using System;
+﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
+using RongCloud.Server.models;
+using RongCloud.Server.models.response;
+using RongCloud.Server.models.user;
+using RongCloud.Server.util;
 
 /**
  *
@@ -14,7 +15,7 @@ using System.Web;
  * @author RongCloud
  * @version
  * */
-namespace io.rong.methods.user.blacklist
+namespace RongCloud.Server.methods.user.blacklist
 {
     public class Blacklist
 
@@ -30,7 +31,6 @@ namespace io.rong.methods.user.blacklist
         {
             this.appKey = appKey;
             this.appSecret = appSecret;
-
         }
 
         /**
@@ -40,9 +40,8 @@ namespace io.rong.methods.user.blacklist
          *
          * @return ResponseResult
          **/
-        public Result Add(UserModel user)
+        public async Task<Result> Add(UserModel user)
         {
-
             string message = CommonUtil.CheckFiled(user, PATH, CheckMethod.ADD);
             if (null != message)
             {
@@ -55,17 +54,18 @@ namespace io.rong.methods.user.blacklist
             {
                 sb.Append("&blackUserId=").Append(HttpUtility.UrlEncode(blackUser.Id, UTF8));
             }
+
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(appKey, appSecret, body,
+            string result = await RongHttpClient.ExecutePost(appKey, appSecret, body,
                 RongCloud.ApiHostType.Type + "/user/blacklist/add.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.ADD, result));
-
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.ADD, result));
         }
 
         /**
@@ -75,25 +75,27 @@ namespace io.rong.methods.user.blacklist
          *
          * @return QueryBlacklistUserResult
          **/
-        public BlackListResult GetList(UserModel user)
+        public async Task<BlackListResult> GetList(UserModel user)
         {
             string message = CommonUtil.CheckFiled(user, PATH, CheckMethod.GETLIST);
             if (null != message)
             {
                 return RongJsonUtil.JsonStringToObj<BlackListResult>(message);
             }
+
             StringBuilder sb = new StringBuilder();
             sb.Append("&userId=").Append(HttpUtility.UrlEncode(user.Id, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(appKey, appSecret, body,
+            string result = await RongHttpClient.ExecutePost(appKey, appSecret, body,
                 RongCloud.ApiHostType.Type + "/user/blacklist/query.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<BlackListResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.GETLIST, result));
+            return RongJsonUtil.JsonStringToObj<BlackListResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.GETLIST, result));
         }
 
         /**
@@ -103,7 +105,7 @@ namespace io.rong.methods.user.blacklist
          *
          * @return ResponseResult
          **/
-        public Result Remove(UserModel user)
+        public async Task<Result> Remove(UserModel user)
         {
             string message = CommonUtil.CheckFiled(user, PATH, CheckMethod.REMOVE);
             if (null != message)
@@ -117,16 +119,18 @@ namespace io.rong.methods.user.blacklist
             {
                 sb.Append("&blackUserId=").Append(HttpUtility.UrlEncode(blackUser.Id, UTF8));
             }
+
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
-            string result = RongHttpClient.ExecutePost(appKey, appSecret, body,
-                    RongCloud.ApiHostType.Type + "/user/blacklist/remove.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<BlackListResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.REMOVE, result));
+            string result = await RongHttpClient.ExecutePost(appKey, appSecret, body,
+                RongCloud.ApiHostType.Type + "/user/blacklist/remove.json", "application/x-www-form-urlencoded");
 
+            return RongJsonUtil.JsonStringToObj<BlackListResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.REMOVE, result));
         }
     }
 }

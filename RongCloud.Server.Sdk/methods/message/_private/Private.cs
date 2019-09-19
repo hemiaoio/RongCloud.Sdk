@@ -1,15 +1,15 @@
-using io.rong.models;
-using io.rong.models.message;
-using io.rong.models.response;
-using io.rong.util;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
+using RongCloud.Server.models;
+using RongCloud.Server.models.message;
+using RongCloud.Server.models.response;
+using RongCloud.Server.util;
 
-namespace io.rong.methods.messages._private
+namespace RongCloud.Server.methods.message._private
 {
-
     /**
      * 发送单聊消息方法
      * docs : http://www.rongcloud.cn/docs/server.html#message_private_publish
@@ -31,7 +31,6 @@ namespace io.rong.methods.messages._private
         {
             AppKey = appKey;
             AppSecret = appSecret;
-
         }
 
         /**
@@ -42,12 +41,13 @@ namespace io.rong.methods.messages._private
          * @return ResponseResult
          * @throws Exception
          **/
-        public ResponseResult Send(PrivateMessage message)
+        public async Task<ResponseResult> Send(PrivateMessage message)
         {
             if (null == message)
             {
                 return RongJsonUtil.JsonStringToObj<ResponseResult>("Paramer 'message' is required");
             }
+
             string errMsg = CommonUtil.CheckFiled(message, PATH, CheckMethod.SEND);
             if (null != errMsg)
             {
@@ -103,16 +103,18 @@ namespace io.rong.methods.messages._private
             {
                 sb.Append("&isIncludeSender=").Append(HttpUtility.UrlEncode(message.IsIncludeSender.ToString(), UTF8));
             }
+
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                        RongCloud.ApiHostType.Type + "/message/private/publish.json", "application/x-www-form-urlencoded");
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/message/private/publish.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.PUBLISH, result));
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.PUBLISH, result));
         }
 
         /**
@@ -123,9 +125,8 @@ namespace io.rong.methods.messages._private
          * @return ResponseResult
          * @throws Exception
          **/
-        public ResponseResult SendTemplate(TemplateMessage message)
+        public async Task<ResponseResult> SendTemplate(TemplateMessage message)
         {
-
             string errMsg = CommonUtil.CheckFiled(message, PATH, CheckMethod.SENDTEMPLATE);
             if (null != errMsg)
             {
@@ -144,6 +145,7 @@ namespace io.rong.methods.messages._private
                 values.Add(vo.Value.Data);
                 push.Add(vo.Value.Push);
             }
+
             templateMessage.FromUserId = message.SenderId;
             templateMessage.ToUserId = toUserIds.ToArray();
             templateMessage.ObjectName = message.ObjectName;
@@ -154,10 +156,11 @@ namespace io.rong.methods.messages._private
             templateMessage.VerifyBlacklist = message.VerifyBlacklist;
             templateMessage.ContentAvailable = message.ContentAvailable;
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, templateMessage.ToString(),
-                                RongCloud.ApiHostType.Type + "/message/private/publish_template.json", "application/json");
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, templateMessage.ToString(),
+                RongCloud.ApiHostType.Type + "/message/private/publish_template.json", "application/json");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.PUBLISHTEMPLATE, result));
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.PUBLISHTEMPLATE, result));
         }
 
         /**
@@ -168,14 +171,14 @@ namespace io.rong.methods.messages._private
          * @return ResponseResult
          * @throws Exception
          **/
-        public Result Recall(RecallMessage message)
+        public async Task<Result> Recall(RecallMessage message)
         {
-
             string errMsg = CommonUtil.CheckFiled(message, RECAL_PATH, CheckMethod.RECALL);
             if (null != errMsg)
             {
                 return RongJsonUtil.JsonStringToObj<ResponseResult>(errMsg);
             }
+
             StringBuilder sb = new StringBuilder();
             sb.Append("&conversationType=").Append(HttpUtility.UrlEncode("1", UTF8));
             sb.Append("&fromUserId=").Append(HttpUtility.UrlEncode(message.SenderId, UTF8));
@@ -183,16 +186,16 @@ namespace io.rong.methods.messages._private
             sb.Append("&messageUID=").Append(HttpUtility.UrlEncode(message.UId, UTF8));
             sb.Append("&sentTime=").Append(HttpUtility.UrlEncode(message.SentTime, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&") == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                                RongCloud.ApiHostType.Type + "/message/recall.json", "application/x-www-form-urlencoded");
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/message/recall.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.RECALL, result));
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.RECALL, result));
         }
     }
-
 }

@@ -1,14 +1,14 @@
-﻿using io.rong.methods.conversation;
-using io.rong.methods.message;
-using io.rong.methods.user;
-using io.rong.methods.group;
-using io.rong.methods.sensitive;
-using io.rong.methods.chatroom;
-using io.rong.methods.push;
-using io.rong.util;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using RongCloud.Server.methods.chatroom;
+using RongCloud.Server.methods.conversation;
+using RongCloud.Server.methods.@group;
+using RongCloud.Server.methods.message;
+using RongCloud.Server.methods.push;
+using RongCloud.Server.methods.sensitive;
+using RongCloud.Server.methods.user;
+using RongCloud.Server.util;
 
-namespace io.rong
+namespace RongCloud.Server
 {
     public class RongCloud
     {

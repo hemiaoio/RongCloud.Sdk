@@ -1,8 +1,7 @@
-﻿using io.rong.messages;
-using Newtonsoft.Json;
-using System;
+﻿using Newtonsoft.Json;
+using RongCloud.Server.messages;
 
-namespace io.rong.models.message
+namespace RongCloud.Server.models.message
 {
     public class MessageModel
 

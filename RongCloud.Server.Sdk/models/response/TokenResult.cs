@@ -1,10 +1,9 @@
 ﻿using Newtonsoft.Json;
-using System;
 
 /**
  * getToken 返回结果
  */
-namespace io.rong.models.response
+namespace RongCloud.Server.models.response
 {
     public class TokenResult : Result
 

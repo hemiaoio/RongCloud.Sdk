@@ -1,9 +1,8 @@
-using io.rong.models.chatroom;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using RongCloud.Server.models.chatroom;
 
-namespace io.rong.models.response
+namespace RongCloud.Server.models.response
 {
     public class ListGagChatroomUserResult : Result
 

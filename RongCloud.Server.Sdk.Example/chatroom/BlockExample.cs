@@ -1,9 +1,10 @@
-using io.rong.models.response;
-using io.rong.methods.chatroom.block;
-using io.rong.models.chatroom;
-using System;
+﻿using System;
+using System.Threading.Tasks;
+using RongCloud.Server.methods.chatroom.block;
+using RongCloud.Server.models.chatroom;
+using RongCloud.Server.models.response;
 
-namespace io.rong.example.chatroom
+namespace RongCloud.Server.Sdk.Example.chatroom
 {
     public class BlockExample
 
@@ -12,17 +13,19 @@ namespace io.rong.example.chatroom
          * 此处替换成您的appKey
          * */
         private static readonly string appKey = "kj7swf8okyqt2";
+
         /**
          * 此处替换成您的appSecret
          * */
         private static readonly string appSecret = "mFe3U1UClx4gx";
+
         /**
          * 自定义api地址
          * */
         private static readonly string api = "http://api.cn.ronghub.com";
 
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             RongCloud rongCloud = RongCloud.GetInstance(appKey, appSecret);
             //自定义 api地址方式
@@ -30,9 +33,10 @@ namespace io.rong.example.chatroom
 
             Block block = rongCloud.Chatroom.block;
 
-            ChatroomMember[] members = {
-                new ChatroomMember(){ Id = "qawr34h"},new ChatroomMember(){ Id = "qawr35h"}
-        };
+            ChatroomMember[] members =
+            {
+                new ChatroomMember() {Id = "qawr34h"}, new ChatroomMember() {Id = "qawr35h"}
+            };
             /**
              *API 文档: http://www.rongcloud.cn/docs/server_sdk_api/chatroom/block.html#add
              *
@@ -47,7 +51,7 @@ namespace io.rong.example.chatroom
                 Minute = 5
             };
 
-            ResponseResult result = block.Add(chatroom);
+            ResponseResult result = await block.Add(chatroom);
             Console.WriteLine("addBlockUser:  " + result);
 
 
@@ -70,10 +74,9 @@ namespace io.rong.example.chatroom
              *
              * 查询被封禁聊天室成员方法
              */
-            ListBlockChatroomUserResult getResult = block.GetList("d7ec7a8b8d8546c98b0973417209a548");
+            ListBlockChatroomUserResult getResult = await block.GetList("d7ec7a8b8d8546c98b0973417209a548");
             Console.WriteLine("getListBlockUser:  " + getResult);
             Console.ReadLine();
         }
-
     }
 }

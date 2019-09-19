@@ -1,12 +1,13 @@
-﻿using io.rong.models;
-using io.rong.models.response;
-using io.rong.util;
-using System;
+﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
-using io.rong.models.chatroom;
+using RongCloud.Server.models;
+using RongCloud.Server.models.chatroom;
+using RongCloud.Server.models.response;
+using RongCloud.Server.util;
 
-namespace io.rong.methods.chatroom.ban
+namespace RongCloud.Server.methods.chatroom.ban
 {
 
     /**
@@ -39,7 +40,7 @@ namespace io.rong.methods.chatroom.ban
         *
         * @return ResponseResult
         **/
-        public ResponseResult Add(ChatroomModel chatroom)
+        public async Task<ResponseResult> Add(ChatroomModel chatroom)
         {
             string errMsg = CommonUtil.CheckFiled(chatroom, PATH, CheckMethod.ADD);
             if (null != errMsg)
@@ -60,7 +61,7 @@ namespace io.rong.methods.chatroom.ban
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
                             RongCloud.ApiHostType.Type + "/chatroom/user/ban/add.json", "application/x-www-form-urlencoded");
 
             return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.ADD, result));
@@ -71,9 +72,9 @@ namespace io.rong.methods.chatroom.ban
          *
          * @return ListGagChatroomUserResult
          **/
-        public ListGagChatroomUserResult GetList()
+        public async Task<ListGagChatroomUserResult> GetList()
         {
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, "",
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, "",
                             RongCloud.ApiHostType.Type + "/chatroom/user/ban/query.json", "application/x-www-form-urlencoded");
 
             return RongJsonUtil.JsonStringToObj<ListGagChatroomUserResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.GETLIST, result));
@@ -86,7 +87,7 @@ namespace io.rong.methods.chatroom.ban
          *
          * @return ResponseResult
          **/
-        public ResponseResult Remove(ChatroomModel chatroom)
+        public async Task<ResponseResult> Remove(ChatroomModel chatroom)
         {
             if (chatroom == null)
             {
@@ -111,7 +112,7 @@ namespace io.rong.methods.chatroom.ban
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
                                RongCloud.ApiHostType.Type + "/chatroom/user/ban/remove.json", "application/x-www-form-urlencoded");
 
             return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.REMOVE, result));

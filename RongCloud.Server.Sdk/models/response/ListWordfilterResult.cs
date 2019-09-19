@@ -1,9 +1,8 @@
-﻿using Newtonsoft.Json;
-using io.rong.models.sensitiveword;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
+using RongCloud.Server.models.sensitiveword;
 
-namespace io.rong.models.response
+namespace RongCloud.Server.models.response
 {
     public class ListWordfilterResult:Result
 

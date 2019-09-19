@@ -1,13 +1,14 @@
-﻿using io.rong.models;
-using io.rong.models.response;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using io.rong.models.message;
-using io.rong.util;
+using System.Threading.Tasks;
 using System.Web;
+using RongCloud.Server.models;
+using RongCloud.Server.models.message;
+using RongCloud.Server.models.response;
+using RongCloud.Server.util;
 
-namespace io.rong.methods.messages.system
+namespace RongCloud.Server.methods.message.system
 {
     /**
      * 发送系统消息方法
@@ -42,7 +43,7 @@ namespace io.rong.methods.messages.system
          * @return ResponseResult
          * @throws Exception
          **/
-        public ResponseResult Send(MessageModel message)
+        public async Task<ResponseResult> Send(MessageModel message)
         {
             SystemMessage systemMessage = (SystemMessage) message;
             string code = CommonUtil.CheckFiled(systemMessage, PATH1, CheckMethod.PUBLISH);
@@ -91,12 +92,12 @@ namespace io.rong.methods.messages.system
 
 
             string body = sb.ToString();
-            if (body.IndexOf("&", StringComparison.Ordinal) == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
                 RongCloud.ApiHostType.Type + "/message/system/publish.json", "application/x-www-form-urlencoded");
 
             return RongJsonUtil.JsonStringToObj<ResponseResult>(
@@ -111,7 +112,7 @@ namespace io.rong.methods.messages.system
          * @return ResponseResult
          * @throws Exception
          **/
-        public ResponseResult SendTemplate(TemplateMessage template)
+        public async Task<ResponseResult> SendTemplate(TemplateMessage template)
         {
             string code = CommonUtil.CheckFiled(template, PATH1, CheckMethod.PUBLISHTEMPLATE);
             if (null != code)
@@ -141,7 +142,7 @@ namespace io.rong.methods.messages.system
                 PushData = template.PushData,
                 ContentAvailable = template.ContentAvailable
             };
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, templateMessage.ToString(),
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, templateMessage.ToString(),
                 RongCloud.ApiHostType.Type + "/message/system/publish_template.json", "application/json");
 
             return RongJsonUtil.JsonStringToObj<ResponseResult>(
@@ -157,7 +158,7 @@ namespace io.rong.methods.messages.system
          * @return ResponseResult
          * @throws Exception
          **/
-        public ResponseResult Broadcast(BroadcastMessage message)
+        public async Task<ResponseResult> Broadcast(BroadcastMessage message)
         {
             string errMsg = CommonUtil.CheckFiled(message, PATH1, CheckMethod.BROADCAST);
             if (null != errMsg)
@@ -186,12 +187,12 @@ namespace io.rong.methods.messages.system
             }
 
             string body = sb.ToString();
-            if (body.IndexOf("&", StringComparison.Ordinal) == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
                 RongCloud.ApiHostType.Type + "/message/broadcast.json", "application/x-www-form-urlencoded");
 
             return RongJsonUtil.JsonStringToObj<ResponseResult>(

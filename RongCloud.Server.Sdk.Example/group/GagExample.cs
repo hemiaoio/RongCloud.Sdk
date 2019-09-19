@@ -1,11 +1,12 @@
-using io.rong.methods.group;
-using io.rong.methods.group.gap;
-using io.rong.models;
-using io.rong.models.group;
-using io.rong.models.response;
-using System;
+﻿using System;
+using System.Threading.Tasks;
+using RongCloud.Server.methods.@group;
+using RongCloud.Server.methods.@group.gag;
+using RongCloud.Server.models;
+using RongCloud.Server.models.@group;
+using RongCloud.Server.models.response;
 
-namespace io.rong.example.group
+namespace RongCloud.Server.Sdk.Example.@group
 {
     /**
      *
@@ -19,10 +20,12 @@ namespace io.rong.example.group
          * 此处替换成您的appKey
          * */
         private static readonly string appKey = "appKey";
+
         /**
          * 此处替换成您的appSecret
          * */
         private static readonly string appSecret = "appSecret";
+
         /**
          * 自定义api地址
          * */
@@ -34,7 +37,7 @@ namespace io.rong.example.group
          *
          * @throws Exception
          */
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             RongCloud rongCloud = RongCloud.GetInstance(appKey, appSecret);
             //自定义 api 地址方式
@@ -48,7 +51,8 @@ namespace io.rong.example.group
              * 添加禁言群成员方法
              */
 
-            GroupMember[] members = { new GroupMember() { Id = "Vu-oC0_LQ6kgPqltm_zYtI" }, new GroupMember() { Id = "uPj70HUrRSUk-ixtt7iIGc" } };
+            GroupMember[] members =
+                {new GroupMember() {Id = "Vu-oC0_LQ6kgPqltm_zYtI"}, new GroupMember() {Id = "uPj70HUrRSUk-ixtt7iIGc"}};
 
             GroupModel group = new GroupModel()
             {
@@ -58,19 +62,19 @@ namespace io.rong.example.group
                 Minute = 5
             };
 
-            Result groupCreateResult = Group.Create(@group);
+            Result groupCreateResult = await Group.Create(@group);
             Console.WriteLine("group create result:  " + groupCreateResult);
-            Console.WriteLine("get group users:" + Group.Get(new GroupModel() { Id = "goupId1.NET" }));
+            Console.WriteLine("get group users:" + Group.Get(new GroupModel() {Id = "goupId1.NET"}));
 
 
-            Result result = gag.Add(group);
+            Result result = await gag.Add(group);
             Console.WriteLine("group.gag.add:  " + result);
 
             /**
              * API 文档: http://www.rongcloud.cn/docs/server_sdk_api/group/gag.html#getList
              * 查询被禁言群成员
              */
-            ListGagGroupUserResult groupLisGagUserResult = gag.GetList("goupId1.NET");
+            ListGagGroupUserResult groupLisGagUserResult = await gag.GetList("goupId1.NET");
             Console.WriteLine("group.gag.getList:  " + groupLisGagUserResult);
 
             /**
@@ -84,10 +88,9 @@ namespace io.rong.example.group
             };
 
 
-            Result groupRollBackGagUserResult = gag.Remove(group);
+            Result groupRollBackGagUserResult = await gag.Remove(group);
             Console.WriteLine("group.gag.remove:  " + groupRollBackGagUserResult);
             Console.ReadLine();
-
         }
     }
 }

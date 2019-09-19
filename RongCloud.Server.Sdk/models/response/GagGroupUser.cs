@@ -1,7 +1,6 @@
-using System;
 using Newtonsoft.Json;
 
-namespace io.rong.models.response
+namespace RongCloud.Server.models.response
 {
 
     /**

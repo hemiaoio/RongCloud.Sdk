@@ -1,6 +1,4 @@
-using System;
-
-namespace io.rong.models.group
+namespace RongCloud.Server.models.@group
 {
     /**
      * 群组数据模型

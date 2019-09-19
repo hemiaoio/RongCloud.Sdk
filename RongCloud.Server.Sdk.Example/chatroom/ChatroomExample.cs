@@ -1,9 +1,10 @@
-using io.rong.methods.chatroom;
-using io.rong.models.chatroom;
-using io.rong.models.response;
-using System;
+﻿using System;
+using System.Threading.Tasks;
+using RongCloud.Server.methods.chatroom;
+using RongCloud.Server.models.chatroom;
+using RongCloud.Server.models.response;
 
-namespace io.rong.example.chatroom
+namespace RongCloud.Server.Sdk.Example.chatroom
 {
     public class ChatroomExample
 
@@ -12,19 +13,20 @@ namespace io.rong.example.chatroom
          * 此处替换成您的appKey
          * */
         private static readonly string appKey = "n19jmcy59f1q9";
+
         /**
          * 此处替换成您的appSecret
          * */
         private static readonly string appSecret = "CuhqdZMeuLsKj";
+
         /**
          * 自定义api地址
          * */
         private static readonly string api = "http://api.cn.ronghub.com";
 
 
-        static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-
             RongCloud rongCloud = RongCloud.GetInstance(appKey, appSecret);
             //自定义 api地址方式
             //RongCloud rongCloud = RongCloud.getInstance(appKey, appSecret,api);
@@ -37,11 +39,12 @@ namespace io.rong.example.chatroom
              * 创建聊天室
              *
              * */
-            ChatroomModel[] chatrooms = {
-                new ChatroomModel(){ Id = "OIBbeKlkx", Name = "chatroomName1"},
-                new ChatroomModel(){ Id = "chatroomId2", Name = "chatroomName2"}
-        };
-            ResponseResult result = chatroom.Create(chatrooms);
+            ChatroomModel[] chatrooms =
+            {
+                new ChatroomModel() {Id = "OIBbeKlkx", Name = "chatroomName1"},
+                new ChatroomModel() {Id = "chatroomId2", Name = "chatroomName2"}
+            };
+            ResponseResult result = await chatroom.Create(chatrooms);
 
             Console.WriteLine("create:  " + result);
 
@@ -74,7 +77,7 @@ namespace io.rong.example.chatroom
                 Order = 1
             };
 
-            ChatroomUserQueryResult chatroomQueryUserResult = chatroom.Get(chatroomModel);
+            ChatroomUserQueryResult chatroomQueryUserResult = await chatroom.Get(chatroomModel);
             Console.WriteLine("queryUser:  " + chatroomQueryUserResult);
 
             /**
@@ -89,11 +92,9 @@ namespace io.rong.example.chatroom
                 ChatroomId = "OIBbeKlkx"
             };
 
-            CheckChatRoomUserResult checkMemberResult = chatroom.IsExist(member);
+            CheckChatRoomUserResult checkMemberResult = await chatroom.IsExist(member);
             Console.WriteLine("checkChatroomUserResult:  " + checkMemberResult.IsInChrm);
             Console.ReadLine();
-
         }
-
     }
 }

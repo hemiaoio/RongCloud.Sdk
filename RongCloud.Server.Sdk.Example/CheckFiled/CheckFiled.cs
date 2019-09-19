@@ -1,13 +1,12 @@
 ﻿using System;
-using io.rong.models.push;
-using io.rong.util;
+using RongCloud.Server.models.user;
+using RongCloud.Server.util;
 
-namespace RongCloud.Sdk.Server.NetStandard.Example.CheckFiled
+namespace RongCloud.Server.Sdk.Example.CheckFiled
 {
     public class CheckFiled
     {
-
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             UserModel user = new UserModel("user_id",
                 "user_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_nameuser_name",

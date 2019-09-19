@@ -1,14 +1,14 @@
-﻿using io.rong.models;
-using io.rong.models.response;
-using System;
+﻿using System;
 using System.Text;
-using io.rong.models.message;
-using io.rong.util;
+using System.Threading.Tasks;
 using System.Web;
+using RongCloud.Server.models;
+using RongCloud.Server.models.message;
+using RongCloud.Server.models.response;
+using RongCloud.Server.util;
 
-namespace io.rong.methods.messages.discussion
+namespace RongCloud.Server.methods.message.discussion
 {
-
     /**
      * 发送讨论组消息方法
      *
@@ -19,7 +19,6 @@ namespace io.rong.methods.messages.discussion
     public class Discussion
 
     {
-
         private static readonly Encoding UTF8 = Encoding.UTF8;
         private static readonly string PATH = "message/discussion";
 
@@ -38,12 +37,13 @@ namespace io.rong.methods.messages.discussion
         {
             RongCloud = rongCloud;
         }
+
         public Discussion(string appKey, string appSecret)
         {
             AppKey = appKey;
             AppSecret = appSecret;
-
         }
+
         /**
          * 发送讨论组消息方法（以一个用户身份向讨论组发送消息，单条消息最大 128k，每秒钟最多发送 20 条消息.）
          *
@@ -53,10 +53,8 @@ namespace io.rong.methods.messages.discussion
          * @return ResponseResult
          * @throws Exception
          **/
-        public ResponseResult Send(DiscussionMessage message)
+        public async Task<ResponseResult> Send(DiscussionMessage message)
         {
-
-
             string code = CommonUtil.CheckFiled(message, PATH, CheckMethod.PUBLISH);
             if (null != code)
             {
@@ -73,6 +71,7 @@ namespace io.rong.methods.messages.discussion
                     sb.Append("&toDiscussionId=").Append(HttpUtility.UrlEncode(child, UTF8));
                 }
             }
+
             sb.Append("&objectName=").Append(HttpUtility.UrlEncode(message.Content.GetType(), UTF8));
             sb.Append("&content=").Append(HttpUtility.UrlEncode(message.Content.ToString(), UTF8));
 
@@ -100,16 +99,18 @@ namespace io.rong.methods.messages.discussion
             {
                 sb.Append("&isIncludeSender=").Append(HttpUtility.UrlEncode(message.IsIncludeSender.ToString(), UTF8));
             }
+
             string body = sb.ToString();
             if (body.IndexOf("&", StringComparison.Ordinal) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                                      RongCloud.ApiHostType.Type + "/message/discussion/publish.json", "application/x-www-form-urlencoded");
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/message/discussion/publish.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.PUBLISH, result));
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.PUBLISH, result));
         }
 
         /**
@@ -120,7 +121,7 @@ namespace io.rong.methods.messages.discussion
          * @return ResponseResult
          * @throws Exception
          **/
-        public Result Recall(RecallMessage message)
+        public async Task<Result> Recall(RecallMessage message)
         {
             //需要校验的字段
             string msgErr = CommonUtil.CheckFiled(message, PATH, CheckMethod.RECALL);
@@ -128,6 +129,7 @@ namespace io.rong.methods.messages.discussion
             {
                 return RongJsonUtil.JsonStringToObj<ResponseResult>(msgErr);
             }
+
             StringBuilder sb = new StringBuilder();
             sb.Append("&conversationType=").Append(HttpUtility.UrlEncode("2", UTF8));
             sb.Append("&fromUserId=").Append(HttpUtility.UrlEncode(message.SenderId, UTF8));
@@ -135,16 +137,16 @@ namespace io.rong.methods.messages.discussion
             sb.Append("&messageUID=").Append(HttpUtility.UrlEncode(message.UId, UTF8));
             sb.Append("&sentTime=").Append(HttpUtility.UrlEncode(message.SentTime, UTF8));
             string body = sb.ToString();
-            if (body.IndexOf("&", StringComparison.Ordinal) == 0)
+            if (body.IndexOf("&", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 body = body.Substring(1, body.Length - 1);
             }
 
-            string result = RongHttpClient.ExecutePost(AppKey, AppSecret, body,
-                                         RongCloud.ApiHostType.Type + "/message/recall.json", "application/x-www-form-urlencoded");
+            string result = await RongHttpClient.ExecutePost(AppKey, AppSecret, body,
+                RongCloud.ApiHostType.Type + "/message/recall.json", "application/x-www-form-urlencoded");
 
-            return RongJsonUtil.JsonStringToObj<ResponseResult>(CommonUtil.GetResponseByCode(PATH, CheckMethod.RECALL, result));
-
+            return RongJsonUtil.JsonStringToObj<ResponseResult>(
+                CommonUtil.GetResponseByCode(PATH, CheckMethod.RECALL, result));
         }
     }
 }
