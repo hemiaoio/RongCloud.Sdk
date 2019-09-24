@@ -3,9 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29201.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RongCloud.Server.Sdk", "RongCloud.Server.Sdk\RongCloud.Server.Sdk.csproj", "{623DD2AC-C067-41B6-97B2-F2D852D1AEAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RongCloud.Server.Sdk", "src\RongCloud.Server.Sdk\RongCloud.Server.Sdk.csproj", "{623DD2AC-C067-41B6-97B2-F2D852D1AEAA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RongCloud.Server.Sdk.Example", "RongCloud.Server.Sdk.Example\RongCloud.Server.Sdk.Example.csproj", "{B2DED97D-648A-49B4-81E9-A8B65116C25B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RongCloud.Server.Sdk.Example", "src\RongCloud.Server.Sdk.Example\RongCloud.Server.Sdk.Example.csproj", "{B2DED97D-648A-49B4-81E9-A8B65116C25B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RongCloud.Server.Sdk.Tests", "test\RongCloud.Server.Sdk.Tests\RongCloud.Server.Sdk.Tests.csproj", "{70F0DDCE-FF7D-4D30-AF5D-2071B9920038}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{9480076B-568A-4B8B-AE40-D5F28CECE3FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{64F5D647-32D2-4F3C-A486-1A9AC730A47F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,9 +27,18 @@ Global
 		{B2DED97D-648A-49B4-81E9-A8B65116C25B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2DED97D-648A-49B4-81E9-A8B65116C25B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2DED97D-648A-49B4-81E9-A8B65116C25B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70F0DDCE-FF7D-4D30-AF5D-2071B9920038}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70F0DDCE-FF7D-4D30-AF5D-2071B9920038}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70F0DDCE-FF7D-4D30-AF5D-2071B9920038}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70F0DDCE-FF7D-4D30-AF5D-2071B9920038}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{623DD2AC-C067-41B6-97B2-F2D852D1AEAA} = {64F5D647-32D2-4F3C-A486-1A9AC730A47F}
+		{B2DED97D-648A-49B4-81E9-A8B65116C25B} = {64F5D647-32D2-4F3C-A486-1A9AC730A47F}
+		{70F0DDCE-FF7D-4D30-AF5D-2071B9920038} = {9480076B-568A-4B8B-AE40-D5F28CECE3FB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B7BBB32E-4040-4515-A1CC-F588E307D5C6}

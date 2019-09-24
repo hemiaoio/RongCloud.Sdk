@@ -71,7 +71,7 @@ namespace RongCloud.Server.util
                 {
                     if (result.IsSuccessStatusCode)
                     {
-                        return await result.RequestMessage.Content.ReadAsStringAsync();
+                        return await result.Content.ReadAsStringAsync();
                     }
 
                     throw new HttpRequestException("RongCloud Request Error: " +

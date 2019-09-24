@@ -11,13 +11,13 @@
       rongcloud sdk for commit
       https://github.com/rongcloud/server-sdk-dotnet/tree/187b0c945b2df5bdabd38d7437c3ecdc05f4bbe9
     </PackageReleaseNotes>
-    <Version>5.2019.6.13</Version>
-    <AssemblyVersion>5.2019.6.13</AssemblyVersion>
-    <FileVersion>5.2019.6.13</FileVersion>
+    <Version>5.2019.6.14</Version>
+    <AssemblyVersion>5.2019.6.14</AssemblyVersion>
+    <FileVersion>5.2019.6.14</FileVersion>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Description>融云的SDK打包成nuget</Description>
     <RepositoryUrl>https://github.com/rongcloud/server-sdk-dotnet</RepositoryUrl>
-    <PackageIconUrl>https://docs.rongcloud.cn/assets/images/favicon.png</PackageIconUrl>
+    <PackageIcon>favicon.png</PackageIcon>
     <PackageProjectUrl>https://www.rongcloud.cn/docs/server.html</PackageProjectUrl>
     <RepositoryType>github</RepositoryType>
     <Copyright>RongCloud</Copyright>
@@ -34,6 +34,7 @@
       <PackageFlatten>false</PackageFlatten>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="favicon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
